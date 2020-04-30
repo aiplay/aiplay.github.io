@@ -112,25 +112,33 @@
 
 
 
-  <meta name="description" content="关于tolua++tolua如何工作tolua++是tolua的扩展版本，一款能够极大地简化C/C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C/C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C/C++中的常量，外部变量，函数，类和方法来给Lua使用。 使用tolua通常要先建立pkg文件，里面包含对应C/C+">
-<meta name="keywords" content="Cocos2d-x">
+  <meta name="description" content="ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。  E – Entity 实体，本质上是存放组件的容器 C – Component 组件，游戏所需的所有数据结构 S – System 系">
+<meta name="keywords" content="独立游戏 3D引擎 Unity Unreal">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于Cocos2d-x的lua绑定机制">
-<meta property="og:url" content="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/index.html">
+<meta property="og:title" content="聊聊ECS架构与实际应用">
+<meta property="og:url" content="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/index.html">
 <meta property="og:site_name" content="爱丸工作室">
-<meta property="og:description" content="关于tolua++tolua如何工作tolua++是tolua的扩展版本，一款能够极大地简化C/C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C/C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C/C++中的常量，外部变量，函数，类和方法来给Lua使用。 使用tolua通常要先建立pkg文件，里面包含对应C/C+">
+<meta property="og:description" content="ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。  E – Entity 实体，本质上是存放组件的容器 C – Component 组件，游戏所需的所有数据结构 S – System 系">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-21T08:10:46.980Z">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbytA.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb6fI.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbDTH.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbgpt.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb21P.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbB0e.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb0mD.png">
+<meta property="og:updated_time" content="2020-04-30T02:20:42.410Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基于Cocos2d-x的lua绑定机制">
-<meta name="twitter:description" content="关于tolua++tolua如何工作tolua++是tolua的扩展版本，一款能够极大地简化C/C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C/C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C/C++中的常量，外部变量，函数，类和方法来给Lua使用。 使用tolua通常要先建立pkg文件，里面包含对应C/C+">
+<meta name="twitter:title" content="聊聊ECS架构与实际应用">
+<meta name="twitter:description" content="ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。  E – Entity 实体，本质上是存放组件的容器 C – Component 组件，游戏所需的所有数据结构 S – System 系">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/04/29/JTbytA.gif">
 
 
 
 
 
 
-  <link rel="canonical" href="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/"/>
+  <link rel="canonical" href="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/"/>
 
 
 
@@ -140,7 +148,7 @@
   };
 </script>
 
-  <title>基于Cocos2d-x的lua绑定机制 | 爱丸工作室</title>
+  <title>聊聊ECS架构与实际应用 | 爱丸工作室</title>
   
 
 
@@ -323,7 +331,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐基慧">
@@ -340,7 +348,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">基于Cocos2d-x的lua绑定机制
+          <h1 class="post-title" itemprop="name headline">聊聊ECS架构与实际应用
               
             
           </h1>
@@ -365,24 +373,12 @@
                 
               
 
-              <time title="创建时间：2015-09-18 00:00:00" itemprop="dateCreated datePublished" datetime="2015-09-18T00:00:00+08:00">2015-09-18</time>
+              <time title="创建时间：2020-04-30 00:00:00 / 修改时间：10:20:42" itemprop="dateCreated datePublished" datetime="2020-04-30T00:00:00+08:00">2020-04-30</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-21 16:10:46" itemprop="dateModified" datetime="2018-08-21T16:10:46+08:00">2018-08-21</time>
               
             
           </span>
@@ -399,7 +395,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cocos2d-x/" itemprop="url" rel="index"><span itemprop="name">Cocos2d-x</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/游戏开发/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a></span>
 
                 
                 
@@ -414,10 +410,10 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2015/09/18/2015-09-18-luabinding-in-cocos2dx/#comments" itemprop="discussionUrl">
+                <a href="/2020/04/30/2020-04-30-talk-about-ecs/#comments" itemprop="discussionUrl">
                 
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/09/18/2015-09-18-luabinding-in-cocos2dx/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/04/30/2020-04-30-talk-about-ecs/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -445,100 +441,48 @@
       
 
       
-        <h2 id="关于tolua"><a href="#关于tolua" class="headerlink" title="关于tolua++"></a>关于tolua++</h2><h3 id="tolua如何工作"><a href="#tolua如何工作" class="headerlink" title="tolua如何工作"></a>tolua如何工作</h3><p><a href="https://github.com/LuaDist/toluapp" target="_blank" rel="noopener">tolua++</a>是<a href="http://webserver2.tecgraf.puc-rio.br/~celes/tolua/" target="_blank" rel="noopener">tolua</a>的扩展版本，一款能够极大地简化C/C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C/C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C/C++中的常量，外部变量，函数，类和方法来给Lua使用。</p>
-<p>使用tolua通常要先建立pkg文件，里面包含对应C/C++头文件中能够被tolua++解析的声明，如常量、变量、函数以及类等。tolua++会根据pkg文件，来生成用于C/C++源文件与Lua交互的c/cpp文件，从而实现Lua中访问指定的C/C++代码。其中，无论是C函数还是C++对象的方法，都一律导出为静态函数。</p>
-<h3 id="如何使用tolua"><a href="#如何使用tolua" class="headerlink" title="如何使用tolua"></a>如何使用tolua</h3><p>生成的tolua++可执行文件，支持一些可选选项，使用./tolua++ -h可进行查看。</p>
+        <p>ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。</p>
 <ul>
-<li><p>使用 <strong>-o</strong> 来指定生成的c/cpp文件</p>
-<p> ./tolua++ -o myfile.c myfile.pkg</p>
-</li>
-<li><p>使用 <strong>-L</strong> 来在优先通过都dofile()来运行一份指定的Lua文件</p>
-<p>  ./tolua++ -o myfile.c myfile.pkg -L rule.lua</p>
-</li>
-<li><p>使用 <strong>-n</strong> 来指定导出到lua的package</p>
-<p>  ./tolua++ -n pkgname -o myfile.c myfile.pkg</p>
-<p>绑定生成代码必须被编译并链接到应用程序，才能被Lua代码访问。每一个被解析的package文件代表要导出到Lua的包。默认情况，包名称就是输入文件的名称。用户可以指定一个不同的包名称。在tolua中，需要明确地初始化解析出的对应的包给Lua。在C/C++代码中我们应该调用初始化函数 <strong>int tolua_pkgname_open(void)</strong> 来进行初始化。其中 <em>pkgname</em> 代表被绑定的包的名称。</p>
-<p>更加详细的说明请参考<a href="http://webserver2.tecgraf.puc-rio.br/~celes/tolua/tolua-3.2.html" target="_blank" rel="noopener">这里</a>。</p>
-</li>
+<li>E – Entity 实体，本质上是存放组件的容器</li>
+<li>C – Component 组件，游戏所需的所有数据结构</li>
+<li>S – System 系统，根据组件数据处理逻辑状态的管理器</li>
 </ul>
 <a id="more"></a>
-<h2 id="cocos2d-x的lua绑定机制"><a href="#cocos2d-x的lua绑定机制" class="headerlink" title="cocos2d-x的lua绑定机制"></a>cocos2d-x的lua绑定机制</h2><h3 id="版本2-x实现"><a href="#版本2-x实现" class="headerlink" title="版本2.x实现"></a>版本2.x实现</h3><p>在本节主要基于quick-cocos2d-x的2.x版本来进行讲解分析。在quick根目录的lib下，Lua绑定相关的代码放置于luabinding目录下，其中build.sh用来生成绑定文件。</p>
-<pre><code>#!/bin/bash
-DIR=$(cd &quot;$(dirname &quot;${BASH_SOURCE[0]}&quot;)&quot; &amp;&amp; pwd)
-TOLUA=&quot;$QUICK_COCOS2DX_ROOT/bin/mac/tolua++&quot;
-
-cd &quot;$DIR/&quot;
-${TOLUA} -L &quot;$DIR/basic.lua&quot; -o &quot;$QUICK_COCOS2DX_ROOT/lib/cocos2d-x/scripting/lua/cocos2dx_support/LuaCocos2d.cpp&quot; Cocos2d.tolua
-</code></pre><p>根据脚本文件内容我们不难发现，其实就是执行了quick根目录bin/mac下的tolua++可执行文件，根据Cocos2d.tolua来解析生成LuaCocosd.cpp文件用于Lua代码中访问cocos2d-x的原生接口。其中还指定优先装载了basic.lua这个Lua文件，由于basic.lua文件篇幅较长，这里先不列出。其中basic.lua中重写实现了 <strong>post_output_hook(packag)</strong> 函数，该函数会在所有所有输出流写完之后执行。basic.lua通过这个函数主要进行了一些替换操作，以保证可以按照cocos2d-x自己的特殊需要修改输出的绑定生成cpp文件。</p>
-<p>举个例子，cocos2d-x会在CCLuaValue.h中声明诸如LUA_STRING、LUA_FUNCTION和LUA_TABLE的类型，它们实际上就是int整型。为了防止tolua++将LUA_FUNCTION等解析成自定义类型，利用basic.lua中的replace函数将一些出现LUA_FUNCTION的地方都替换成了空的字符串。</p>
-<p>正常如果我们想添加自己的c++代码并绑定给Lua使用，需要在quick-cocos2d-x中建立自己的tolua文件，该文件等同于之前的pkg文件，同样用于声明相关会被解析给Lua使用的常量、函数和类等。并建立一份build.sh脚本文件，内容如下：</p>
-<pre><code>#!/usr/bin/env bash
-DIR=&quot;$( cd &quot;$( dirname &quot;${BASH_SOURCE[0]}&quot; )&quot; &amp;&amp; pwd )&quot;
-cd &quot;$DIR&quot;
-OUTPUT_DIR=&quot;$DIR&quot;
-QUICK_COCOS2DX_ROOT=&quot;$DIR/../../..&quot;
-MAKE_LUABINDING=&quot;$QUICK_COCOS2DX_ROOT&quot;/bin/compile_luabinding.sh
-$MAKE_LUABINDING -d &quot;$OUTPUT_DIR&quot; test.tolua
-</code></pre><p>其中test.tolua是我们建立的pkg文件，里面声明了一个用于解析的C++类，其中类中有两个成员函数分别如下声明：</p>
-<pre><code>string gzipDecompressStringLua(const char* data, int len);
-LUA_STRING gzipCompressStringLua(const char* data, int len);
-</code></pre><p>第一个gzipDecompressStringLua函数返回一个std::string给Lua使用，而第二个gzipCompressStringLua函数则返回LUA_STRING（实际上是int）给Lua层。执行刚刚新建立的build.sh，会自动生成一个cpp和h文件，里面就是根据tolua声明文件而对指定cpp文件解析生成的中间代码。首先会对Lua栈中的相关函数变量以及参数进行正确性地检查，没有问题后会根据tolua中的tolua_toXX系列函数生成调用所需的类的对象以及相关参数，最后调用c++对应的函数并获得返回值，通过tolua_pushXX系列函数将值压入Lua栈中。具体代码如下：</p>
-<pre><code>static int tolua_jj_luabinding_JJZipUtil_gzipDecompressStringLua00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
-    tolua_Error tolua_err;
-    if (
-        !tolua_isusertype(tolua_S,1,&quot;JJZipUtil&quot;,0,&amp;tolua_err) ||
-        !tolua_isstring(tolua_S,2,0,&amp;tolua_err) ||
-        !tolua_isnumber(tolua_S,3,0,&amp;tolua_err) ||
-        !tolua_isnoobj(tolua_S,4,&amp;tolua_err)
-    )
-    goto tolua_lerror;
-    else
-#endif
-    {
-        JJZipUtil* self = (JJZipUtil*)  tolua_tousertype(tolua_S,1,0);
-        const char* data = ((const char*)  tolua_tostring(tolua_S,2,0));
-        int len = ((int)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-    if (!self) tolua_error(tolua_S,&quot;invalid &apos;self&apos; in function &apos;gzipDecompressStringLua&apos;&quot;, NULL);
-#endif
-    {
-        string tolua_ret = (string)  self-&gt;gzipDecompressStringLua(data,len);
-        tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
-    }
-    }
-    return 1;
-#ifndef TOLUA_RELEASE
-    tolua_lerror:
-    tolua_error(tolua_S,&quot;#ferror in function &apos;gzipDecompressStringLua&apos;.&quot;,&amp;tolua_err);
-    return 0;
-#endif
-}
-</code></pre><p>而第二个返回LUA_STRING的函数，生成代码类似，只不过调用c++函数并获得返回值处的代码变成了没有处理返回值以及压入Lua栈的操作，需要我们在具体函数实现中调用相应的api来将指定的值压入栈中，并可以指定压入数据的长度，这样可以避免一些数据截断的情况的发生。对应生成代码如下：</p>
-<pre><code>self-&gt;gzipCompressStringLua(data,len);
-</code></pre><p>回顾刚刚的build.sh，不难发现，实际上就是去调用quick-cocos2d-x的根目录下bin/compile_luabinding.sh脚本文件，该脚本又调用了bin/lib/compile_luabinding.php脚本文件，其中该目录下还有其他的php脚本文件，如compile_luabinding_functions.php文件中针对LUA_STRING等类型进行了特殊处理，与之前的cocos2d-x中原生处理LUA_FUNCTION的思路一致。</p>
-<h3 id="版本3-x实现"><a href="#版本3-x实现" class="headerlink" title="版本3.x实现"></a>版本3.x实现</h3><p>在cocos2d-x 3.x版本后，针对Lua的绑定做了一些变动，开发者们不需要再针对每一个要解析绑定的cpp文件来编写pkg(tolua)文件了。在cocos2d-x/tools/tolua目录下，我们发现有许多ini为后缀的文件。根据这些ini配置文件，执行同一目录下的genbindings.py就会生成绑定代码cpp/hpp文件于cocos2d-x/cocos/scripting/lua-bindings/auto目录下。具体如何添加自定义的C++类绑定给Lua使用，请参考官方帮助文档<a href="http://www.cocos.com/doc/article/index?type=wiki&amp;url=/doc/cocos-docs-master/manual/framework/native/wiki/how-to-use-bindings-generator/zh.md" target="_blank" rel="noopener">如何使用 bindings-generator 自动生成 lua绑定</a>。</p>
-<p>关于genbindings.py脚本文件主要做了以下几件事情：</p>
+<p>这里需要强调一下，Componet组件只能存放数据，不能实现任何处理状态相关的函数，而System系统不可以自己去记录维护任何状态。说的通俗点，就是<u><strong>组件放数据，系统来处理</strong></u>。这么做的好处，就是为了尽可能地让数据与逻辑进行<strong>解耦</strong>。与此同时，一个良好的数据结构设计，也会以增加<strong>CPU缓存命中</strong>的形式来提升性能表现。但我认为，推动ECS流行的更深层次原因，是它的解耦理念，性能上还只是其次。</p>
+<p>试想一下，你在开发一款多人实时在线竞技游戏，无论是吃鸡也好，农药也罢，日益堆积的<strong>变动需求</strong>与越来越多的<strong>状态维护</strong>肯定是开发人员所需面对的主旋律。也许游戏设计之初，策划会信誓旦旦地跟你说，咱们要整个5v5对战的MOBA游戏，就跟王者农药差不多，不过咱们牛逼的地方在于英雄可以变成汽车，就像变形金刚那样：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbytA.gif" alt="1"></p>
+<p>假设你用面向对象设计中的”类-继承“模式，肯定会优先设计出一个“英雄”类来，它可能会有不同的技能和武器，当然这需要通过策划来配置，我们则根据这些不同的配置数据，来实例化出一个个独立的英雄。同时，这个类还要包含“变身”的功能，变成汽车后，“人”的一些行为会被限制，比如无法开枪射击，但是移动速度会大大增加，物理耐性提升等等。</p>
+<p>当你辛辛苦苦设计好满意的游戏架构后，策划又兴冲冲地跑过来，阐述他的新点子：英雄变成汽车状态后，应该有不同的形态表现，有的2个轮子的、4个轮子的，也有履带式的，最好还能支持没有轮子的概念车！在策划看来，这种仅仅调整一些配置性的东西，实现起来难度应该不大。但是对于开发者来说，移动的动作，车轮的印记特效等等，都需要重新考虑一番，好好地重构。</p>
+<p>没过几天，策划又鬼魅般地出现，提出了新的需求：我体验了下游戏原型，只是变身汽车的话游戏画面不够立体，打击感也不强，你看能不能再加个变身飞机的机制，最好能海陆空全方位战斗，就像这样婶儿的：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb6fI.gif" alt="2"></p>
+<p>没办法，还得继续扩展这个英雄类，让它的功能越来越“强大”，即使我们的内心几近崩溃的边缘。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbDTH.gif" alt="3"></p>
+<p>又过了几天，策划再次出现，还未说话，卒。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbgpt.gif" alt="6"></p>
+<p>当然，上面举的例子有很多玩笑的成分在里面，但如果你也是位游戏开发者的话，是不是会产生共鸣，有种似曾相识的感觉？策划的专业程度或许是一方面，但游戏的<strong>版本迭代</strong>与<strong>不断试错</strong>都是客观存在的事实，是无法逃避的。随着需求的不断累加，最初的那个“英雄类”会越来越臃肿。倘若你的项目中有多个程序员进行协作开发，那么恭喜你，代码的维护成本会指数级的增加！每个人都必须对英雄的方方面面了若指掌，否则一个不当的改动就可能造成毁灭性的灾难。</p>
+<p>这个时候，ECS架构就体现出了它的优势。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb21P.gif" alt="7"></p>
+<p>与传统的“类-继承”奉行的“我是什么”不同，基于组件化的ECS架构更强调的是“我有什么”，是一种<strong>组合优先</strong>的编程模式。使用组合而非继承，会使你的代码更具灵活性。还是上面的例子，针对游戏的玩法，我们会构建出一个英雄的Entity实体类，它更像一个空盒子，可以在创建英雄Entity实例的时候赋予它一个ID作为唯一标识。当我们将这个实体放到world下，也许什么也看不见，什么也做不了，这是因为它现在还什么数据都没有。此时就需要根据游戏的需求，来设计出不同的组件填充到这个实体当中。注意，应尽可能地保证组件设计上的<strong>扁平化</strong>，会让你的模块结构更加清晰，也大大增加了CPU缓存命中的概率。</p>
+<p>举个例子，常见的组件包括而不仅限于</p>
 <ul>
-<li>检查ndk以及llvm的支持</li>
-<li>整理并将一些配置的环境变量值写入userconf.ini中</li>
-<li>遍历cmd_args列表(其中key值就是待解析ini文件的名称)，并执行cocos2d-x/tools/bindings-generator/generator.py</li>
+<li>渲染组件 ：英雄的顶点、材质等数据，保证我们能正确地渲染到world中</li>
+<li>位置组件 ：记录着实体在这个world的真实位置</li>
+<li>特效组件 ：不同的时机，可能会需要播放不同的粒子特效以增强视觉感受</li>
 </ul>
-<p>因此，具体的解析操作是在cocos2d-x/tools/bindings-generator/generator.py来实现的。bindings-generator下的genertor.py不单单用来处理Lua的绑定操作，也包括js的。根据分析源码，我们发现其支持集中传入参数：</p>
-<ul>
-<li><strong>-s</strong> 设置要转换的特定部分</li>
-<li><strong>-t</strong> 指定目标虚拟机，会从TARGET.yaml中搜索</li>
-<li><strong>-o</strong> 指定生成C++代码的输出目录</li>
-<li><strong>-n</strong> 指定输出文件的名称，默认为.ini文件中的prefix选项</li>
-</ul>
-<p>在cocos2d-x/tools/bindings-generator/targets/lua目录下，放有conversions.yaml文件以及一个templates目录，根据conversions.yaml配置与templates下的模板文件，通过clang来进行语法和词法分析来生成绑定代码。</p>
-<h2 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h2><ul>
-<li><a href="http://www.ibm.com/developerworks/cn/xml/x-cn-yamlintro/" target="_blank" rel="noopener">YAML简介</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-pythcheetah/" target="_blank" rel="noopener">使用Python和Cheetah构建和扩充模板</a></li>
-<li><a href="http://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang" target="_blank" rel="noopener">Parsing C++ in Python with Clang</a></li>
-<li><a href="http://szelei.me/code-generator/" target="_blank" rel="noopener">Implementing a code generator with libclang</a></li>
-</ul>
+<p>此外，根据策划的各种奇葩需求，还可以衍生出不同的功能性组件，本质上都是数据的集合，之后会交由 System 来进行各种状态修改与逻辑计算。比如，想要一个英雄既能变成汽车又能变成飞机，我们可以设计出 Wheel 和 Wing 两个组件，存储数据的同时也表明不同实体的对应功能或身份。当然对应着的是处理该组件的System，一个 FlightSystem 可以去关注那些持有 Wing 的实体。确切点说，FlightSystem 其实只需要关注 Wing 组件就足够了，它不应该关心是哪个实体持有这个组件，只要能修改 Wing 的状态就足矣。</p>
+<p>这样，就实现了我们经常说的<strong>解耦</strong>。</p>
+<p>将复杂的游戏拆解成不同的逻辑处理单元 (System) ，而每个逻辑处理单元只关心那些向它注册监听的数据，其他数据一概不管。并且最主要的是，System 是不保存状态的，Component 才是状态的真正持有者。刚开始的时候，也许会很不适应，总想着在 System 里加点什么标识，好方便地进行状态回溯或者复用。这时应该警惕起来，你所设计的   System 职责是否单一，组件持有的数据是否过于复杂。<u><strong>将一个复杂的模块拆解成若干个相对简单的单元</strong></u>，不失为明智的选择。</p>
+<p>下面就是我们基于ECS而设计的新的游戏架构。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbB0e.png" alt="4"></p>
+<p>然而，现实总是残酷的。如果一个游戏真要这么简单，或许ECS也就没什么存在的价值了。仅就《守望先锋》分享所知，它们游戏中光 System 就上百个，并且为了保证 System 不保存状态，在游戏帧更新时，System 执行的时序就有了限制。并且很多情况下，很多System关心的组件只有一个（如输入事件），于是就有了<strong>Singleton Component</strong>。个人觉得，由于不同游戏的不同特质，某些情况下都很难去严格遵循ECS的架构约束，但毕竟架构是为人服务的，而不仅仅是束缚。在我们深刻理解了ECS的思想后，针对实际需要来做一些变通也是未尝不可的。</p>
+<p>就拿我参与开发的一款轻MOBA类的多人对战游戏为例，采用的网络通讯方式是protobuf加状态同步，伤害、状态等判定结果几乎都是放在服务器端来处理，客户端主要就是根据每一帧接收的网络消息来处理相应的数据、更新状态。由于客户端使用的语言是<strong>Lua</strong>，因此会使用一个table数据结构来保存游戏中注册的 System 实例，在帧循环遍历这个注册表，按照顺序依次执行每个 System 的<strong>Update</strong>函数。System 会处理自己内部维护的组件池，里面放的是注册进来希望被处理的组件，从而根据这些组件的数据来进行一些逻辑上的操作。</p>
+<p>解析protobuf数据后，每条协议消息发来的数据其实就是组件所要更新的，但由于服务器端并没有采用ECS这种设计模式，数据设计上也肯定会有些出入的地方，于是需要客户端来解析转换下。为此，引入了<strong>Driver</strong>的概念。首先，会有若干个表格来存放我们创建了的不同Entity 实例，每个Entity都会持有一个ID。服务器端下发的消息中总会包含某些实体ID，这样处理不同逻辑的 Driver 就会根据这些ID来找到它所需修改数据的Entity，再从Entity找出相关的 Component 组件，将proto消息里的数据更新给这个组件即可，剩下的工作就交给 System 了。</p>
+<p>至此，我们的ECS设计变种成了这个样子：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb0mD.png" alt="5"></p>
+<p>上述设计中，由于多了一层Driver，并且游戏使用的是<strong>状态同步</strong>机制，因此帮助 System 分担了很多工作。System 仅仅是批量处理 Component 状态的管理者，每一帧遍历系统组件池里的所有组件 (此时的组件已经是 Driver 更新好数据了的) ，我们也可以根据自己的需要来设定刷新间隔，对于一些不需要在每个帧刷新都执行 Update 函数的 System ，可以降低它们的更新频率从而节约一些性能开销。而 Driver 层面，只是数据的一道“搬运工”，负责更新给 System 能够识别的组件的持有数据。</p>
+<p>当所在团队改用ECS后，起初都很不习惯这种新的编程模式，总会不知不觉中切换回“类-继承”的编程思路。但随着项目的推进，ECS所带来的一些优势变得愈发明显。首先，就是<strong>降低了团队协作成本</strong>。往昔的项目经历中后期时，总会出现某些又臭又长的 <strong>God Class</strong> ，甚至会出现一些功能重复的模块，同一个功能的函数被实现了两次！这种情境下，代码的维护成本可想而知。而在ECS编程模式下，每名开发人员，只需要关心自己负责的模块即可，System 很好地隔离模块之间的耦合。</p>
+<p>ECS也并非尽善尽美，随着系统不断地开发与扩展，会发现难免有时 System 要处理的数据过于复杂，很难只用一个单一组件就能表示，或是之前所说的只有一个 Component 会被 System 监控的Singleton情况十分常见。这就考验开发者的权衡取舍能力：如果一味细化 System 的种类，虽能保证模块与组件数据之间的解耦，但却无形中增加了 System 的维护成本，使得原本比较简单的逻辑变得复杂起来，难以维护。另一种做法是，建立组件之间的关联，可以是组件内部持有另一个组件的指针，也可以是几个组件组合成一个新的组件。但这样做就牺牲掉了组件设计上的<strong>扁平化原则</strong>。</p>
+<p>综上所述，世界上没有两全其美的好事，我们经常要去做决策、去权衡每种做法的利弊。一味刻板地循规蹈矩也是不可取的，越来越多的团队开发衍生出了新的ECS变种。但只要我们真正地理解了ECS的主旨与精髓，不断探索与改进，找到适合自己项目的最佳平衡点，它一定会成为助你高效开发的利器。</p>
 
       
     </div>
@@ -581,12 +525,6 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Cocos2d-x/" rel="tag"># Cocos2d-x</a>
-          
-        </div>
-      
 
       
       
@@ -616,8 +554,8 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/05/07/2015-05-07-vim-ultisnips/" rel="next" title="VIM下使用自定义代码片段">
-                <i class="fa fa-chevron-left"></i> VIM下使用自定义代码片段
+              <a href="/2018/08/15/2018-08-15-build-physics-system/" rel="next" title="使用PhysX构建简单的物理系统">
+                <i class="fa fa-chevron-left"></i> 使用PhysX构建简单的物理系统
               </a>
             
           </div>
@@ -625,10 +563,6 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/11/03/2015-01-03-year-summary/" rel="prev" title="我的2014-2015">
-                我的2014-2015 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -683,17 +617,8 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -846,22 +771,6 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于tolua"><span class="nav-number">1.</span> <span class="nav-text">关于tolua++</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tolua如何工作"><span class="nav-number">1.1.</span> <span class="nav-text">tolua如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用tolua"><span class="nav-number">1.2.</span> <span class="nav-text">如何使用tolua</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cocos2d-x的lua绑定机制"><span class="nav-number">2.</span> <span class="nav-text">cocos2d-x的lua绑定机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本2-x实现"><span class="nav-number">2.1.</span> <span class="nav-text">版本2.x实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#版本3-x实现"><span class="nav-number">2.2.</span> <span class="nav-text">版本3.x实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关参考"><span class="nav-number">3.</span> <span class="nav-text">相关参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -1021,9 +930,9 @@ LUA_STRING gzipCompressStringLua(const char* data, int len);
   
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/';
-        this.page.identifier = '2015/09/18/2015-09-18-luabinding-in-cocos2dx/';
-        this.page.title = '基于Cocos2d-x的lua绑定机制';
+        this.page.url = 'http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/';
+        this.page.identifier = '2020/04/30/2020-04-30-talk-about-ecs/';
+        this.page.title = '聊聊ECS架构与实际应用';
         };
       function loadComments () {
         var d = document, s = d.createElement('script');
