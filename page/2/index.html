@@ -323,6 +323,202 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2015/11/28/2015-11-28-android-plugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐基慧">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/11/28/2015-11-28-android-plugin/" itemprop="url">
+                  Android插件机制研究分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-11-28 00:00:00" itemprop="dateCreated datePublished" datetime="2015-11-28T00:00:00+08:00">2015-11-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-08-21 16:10:46" itemprop="dateModified" datetime="2018-08-21T16:10:46+08:00">2018-08-21</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/11/28/2015-11-28-android-plugin/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/11/28/2015-11-28-android-plugin/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="初识插件化"><a href="#初识插件化" class="headerlink" title="初识插件化"></a>初识插件化</h3><p>早在Android 2.3的年代，依旧存在着著名的 <strong>65535</strong> 问题，即应用项目内的最大方法数不能超过65535个，否则无法编译通过。随着应用业务逻辑的不断发展，无论如何优化代码，也很快会遇到这个瓶颈。多数的解决方案，是通过拆分并装载多个dex字节码文件来规避这个问题。但对于结构复杂、业务逻辑繁重的应用来说，仅仅拆分dex文件是远远不够的，因此，插件化的这个概念也随之应运而生。</p>
+<p>所谓 <strong>插件化</strong> ，我们可以理解为将一个单独的apk文件，通过某种机制，使其可以在未安装的状态下直接运行。这样一来，我们便可以将主应用的多个业务模块拆分出来，单独编译成不同的apk文件，不仅可以减轻主应用的体积，还能使业务逻辑模块化，降低模块间的耦合。</p>
+<p>简要概括下来，插件化主要包括以下三个优点：</p>
+<ul>
+<li><p>动态更新<br>  当某个业务模块需要改进更新的时候，不用再升级安装庞大的宿主应用，仅仅自动下载对应的轻量插件便可以，并且无需用户去安装。这对于产品的迭代优化，紧急Bug的修复都有着很大的帮助。</p>
+</li>
+<li><p>可定制化<br>  插件化在降低模块耦合的同时，也为应用的定制给予了极大的便利。针对不同的发布渠道或是运营需要，宿主应用能够在不修改代码的情况下从容地进行定制，大大降低了发布成本。</p>
+</li>
+<li><p>并行协作开发<br>  对于大型应用，独立的插件可以在不同的团队之间并行进行开发，缩短项目进程，提高开发效率。</p>
+</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/11/28/2015-11-28-android-plugin/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2015/11/03/2015-01-03-year-summary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2097,207 +2293,11 @@ shutil.rmtree(path)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2014/11/03/2014-11-03-c11-with-cocos2dx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="徐基慧">
-      <meta itemprop="description" content="爱生活 | 爱丸子">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爱丸游戏工作室">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/11/03/2014-11-03-c11-with-cocos2dx/" itemprop="url">
-                  cocos2d-x 3.x 中用到的c11特性
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2014-11-03 00:00:00" itemprop="dateCreated datePublished" datetime="2014-11-03T00:00:00+08:00">2014-11-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-21 16:10:46" itemprop="dateModified" datetime="2018-08-21T16:10:46+08:00">2018-08-21</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/cocos2d-x/" itemprop="url" rel="index"><span itemprop="name">cocos2d-x</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2014/11/03/2014-11-03-c11-with-cocos2dx/#comments" itemprop="discussionUrl">
-                
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2014/11/03/2014-11-03-c11-with-cocos2dx/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="回调函数指针传递"><a href="#回调函数指针传递" class="headerlink" title="回调函数指针传递"></a>回调函数指针传递</h2><p>在从ccMacros.h中定义了CC_CALLBACK_n系列宏，其中n为0~4，表示包裹回调函数指针的参数个数。</p>
-<p>以触摸事件为例：</p>
-<pre><code>void Test::initListener()
-{
-    auto listener = EventListenerTouchOneByOne::create();
-    listener-&gt;onTouchBegan = CC_CALLBACK_2(Test::onTouchBegan, this);
-    listener-&gt;onTouchMoved = CC_CALLBACK_2(Test::onTouchMoved, this);
-    listener-&gt;onTouchEnded = CC_CALLBACK_2(Test::onTouchEnded, this);
-    listener-&gt;onTouchCancelled = CC_CALLBACK_2(Test::onTouchCancelled, this);
-}
-</code></pre><p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2014/11/03/2014-11-03-c11-with-cocos2dx/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2344,7 +2344,7 @@ shutil.rmtree(path)
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

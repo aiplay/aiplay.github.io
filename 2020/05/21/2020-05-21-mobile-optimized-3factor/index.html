@@ -112,25 +112,27 @@
 
 
 
-  <meta name="description" content="Sol2简介Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。 Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到">
-<meta name="keywords" content="lua binding">
+  <meta name="description" content="评价一款游戏的性能好坏，我们通常会用到帧率（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。 性能优化要谨遵二八原则：20%的代码影响80%的性能瓶颈。因此要合理地找出性能瓶颈所在，避免负优化。下">
+<meta name="keywords" content="独立游戏 3D引擎 Unity UE4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sol2使用教程">
-<meta property="og:url" content="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/index.html">
+<meta property="og:title" content="手游开发中渲染优化的三个要素">
+<meta property="og:url" content="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="Sol2简介Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。 Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到">
+<meta property="og:description" content="评价一款游戏的性能好坏，我们通常会用到帧率（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。 性能优化要谨遵二八原则：20%的代码影响80%的性能瓶颈。因此要合理地找出性能瓶颈所在，避免负优化。下">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-21T08:10:46.982Z">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2526">
+<meta property="og:updated_time" content="2020-05-21T03:00:17.552Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sol2使用教程">
-<meta name="twitter:description" content="Sol2简介Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。 Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到">
+<meta name="twitter:title" content="手游开发中渲染优化的三个要素">
+<meta name="twitter:description" content="评价一款游戏的性能好坏，我们通常会用到帧率（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。 性能优化要谨遵二八原则：20%的代码影响80%的性能瓶颈。因此要合理地找出性能瓶颈所在，避免负优化。下">
+<meta name="twitter:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2526">
 
 
 
 
 
 
-  <link rel="canonical" href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/"/>
+  <link rel="canonical" href="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/"/>
 
 
 
@@ -140,7 +142,7 @@
   };
 </script>
 
-  <title>Sol2使用教程 | 爱丸游戏工作室</title>
+  <title>手游开发中渲染优化的三个要素 | 爱丸游戏工作室</title>
   
 
 
@@ -323,7 +325,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐基慧">
@@ -340,7 +342,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Sol2使用教程
+          <h1 class="post-title" itemprop="name headline">手游开发中渲染优化的三个要素
               
             
           </h1>
@@ -365,24 +367,12 @@
                 
               
 
-              <time title="创建时间：2016-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2016-08-09T00:00:00+08:00">2016-08-09</time>
+              <time title="创建时间：2020-05-21 00:00:00 / 修改时间：11:00:17" itemprop="dateCreated datePublished" datetime="2020-05-21T00:00:00+08:00">2020-05-21</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-08-21 16:10:46" itemprop="dateModified" datetime="2018-08-21T16:10:46+08:00">2018-08-21</time>
               
             
           </span>
@@ -399,7 +389,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Lua/" itemprop="url" rel="index"><span itemprop="name">Lua</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/游戏开发/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a></span>
 
                 
                 
@@ -414,10 +404,10 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/09/2016-08-09-sol2-tutorail/#comments" itemprop="discussionUrl">
+                <a href="/2020/05/21/2020-05-21-mobile-optimized-3factor/#comments" itemprop="discussionUrl">
                 
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/09/2016-08-09-sol2-tutorail/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/05/21/2020-05-21-mobile-optimized-3factor/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -445,191 +435,56 @@
       
 
       
-        <h3 id="Sol2简介"><a href="#Sol2简介" class="headerlink" title="Sol2简介"></a>Sol2简介</h3><p>Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。</p>
-<p>Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到了许多C++11/14特性，因此编译时需要编译器支持C++14标准。</p>
-<p>具体使用以及介绍详情，请前往<a href="https://github.com/ThePhD/sol2" target="_blank" rel="noopener">Github仓库</a>和<a href="http://sol2.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">Sol2主页</a>。</p>
-<h3 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h3><p>从Sol的<a href="https://github.com/ThePhD/sol2" target="_blank" rel="noopener">Github仓库</a>clone下代码后，我们发现其目录下很多test开头的cpp/hpp文件，这些文件里面有着大量的Sol的使用示例以及各种特性的展示，而在example目录下的cpp文件都仅仅是一些最基础的使用示例。为了方便测试和体验Sol，你也可以自己建立一些自己的test.cpp文件，首先你要在源文件中include引用sol.hpp头文件，这样才能使用Sol提供的接口。而在使用gcc编译的时候，需要指定关联头文件的路径，可以使用如下命令：</p>
-<pre><code>g++ test.cpp -Isolpath/single/sol -llua -std=c++14
-</code></pre><p>其中solpath是你Sol2的具体路径，在Sol2的项目目录下，有一个single/sol/sol.hpp头文件，这个头文件集成了所有的相关代码到一起，所以编译时 -I 后仅指定这一个路径就可以了，同时要保证你的gcc编译器支持C++14标准。</p>
-<a id="more"></a>
-<h4 id="绑定第一个类"><a href="#绑定第一个类" class="headerlink" title="绑定第一个类"></a>绑定第一个类</h4><pre><code>#include &quot;stdio.h&quot;
-#include &quot;sol.hpp&quot;
+        <p>评价一款游戏的性能好坏，我们通常会用到<strong>帧率</strong>（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。</p>
+<p>性能优化要谨遵<strong>二八原则</strong>：<em>20%的代码影响80%的性能瓶颈</em>。因此要合理地找出性能瓶颈所在，避免负优化。下面就三个比较常见的方面：<strong>bandwidth</strong>、<strong>drawcall</strong>、<strong>overdraw</strong>（fillrate）来分别阐述渲染阶段是如何造成性能瓶颈以及对应的解决办法。</p>
+<h4 id="Bandwidth"><a href="#Bandwidth" class="headerlink" title="Bandwidth"></a>Bandwidth</h4><p>移动端的GPU设计之初，优先注重的肯定是功耗问题，然而在实际渲染一帧图像的时候，对功耗影响最大的因素就是<strong>带宽（bandwidth）</strong>。</p>
+<p>为什么会是带宽呢？</p>
+<p>这是因为出于空间的考虑，手机芯片的设计上采用了SoC架构，因此内存与显存实际上是共享在一块物理内存上的，在OpenGL ES规范中，内存与显存中的数据却不能共享。在有限带宽的前提下，我们不妨计算一下，一台分辨率为1920*1080的移动设备，按60帧率来算，每秒钟1次overdraw产生的数据量为：</p>
+<blockquote>
+<p>1920 <em> 1080 </em> 32 <em> 60 / (1024 </em> 1024) = 3.7 Gb</p>
+</blockquote>
+<p>如果遇到了大量的半透明物体或是粒子特效，那么数据量上可能会成倍的增长。</p>
+<p>如此大量的数据存储在显存的FrameBuffer中，GPU要以高昂地代价频繁地去显存访问FrameBuffer里的数据，这显然是很难接受的。因此在移动端的显卡硬件上，想到了一种优化方式，就是将FrameBuffer拆分成不同的小块(tile)，每次可以先将这一小块的数据放到访问速度更快的On-Chip Memory中去，GPU会先从tile中一块块地去进行渲染，等整体渲染完成之后，再将数据搬回显存上。</p>
+<p>我们将这种模式称为 <strong>TBR（Tile Base Rendering）</strong>。</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2526" alt="4db7333e00a72f5774ed41e31991f5a0.png"></p>
+<p>然而在TBR模式下，可能存在着这样的一个问题，如果对于CPU每一次传来的绘制命令都进行渲染的话，那么GPU必定会频繁、大量地对tile数据进行搬迁操作，这显然是不可接受的。为了解决这个问题，TBR一般的策略是：对于CPU提交的Draw Call请求，先只做顶点处理，将Vertex Shader计算的结果暂存到一个叫 <strong>FrameData</strong> 的地方。等到执行 <strong>Swap Buffer</strong> 的时候，再对整个数据做光栅化，进行绘制。</p>
+<p>既然是等所有的FrameData数据处理好后一次性进行绘制，GPU硬件上便进一步做了些延迟渲染相关的优化。例如iOS上的PowerVR，专门有一个叫 ISR 的硬件，会去处理FrameData中那些诸如深度测试、模板测试没有通过的数据，尽可能地只去渲染那些最终影响FrameBuffer的物体。</p>
+<p>我们将这种模式称为 <strong>TBDR（Tile Base Deffered Rendering）</strong>。</p>
+<p>基于移动端GPU特有的架构模式，需要我们做哪些优化方面的事情或是注意事项呢？</p>
+<ul>
+<li>使用压缩的纹理格式，如ETC、PVR等</li>
+<li>打开Mipmap（内存与带宽的权衡）</li>
+<li>减少Shader中的采样次数，尽量合并一些通道图</li>
+<li>控制总顶点数量</li>
+<li>不要频繁地切换FrameBuffer（后处理效果）</li>
+</ul>
+<h4 id="Drawcall"><a href="#Drawcall" class="headerlink" title="Drawcall"></a>Drawcall</h4><p>手机上CPU与GPU的关系，就好像客户端与服务端的CS架构。所谓Drawcall，可以理解为Client端的CPU向Server端的GPU发送的一次绘制命令，同时会传递需要被渲染的图元列表。现代GPU就为了<strong>高并发</strong>处理数据而生的，一般Drawcall的绘制数据计算起来应该还是绰绰有余。但由于CPU传递的渲染数据得通过PCI-E总线才能传到GPU显存中的全局存储区域，频繁且大量地提交绘制相对简单的绘制命令，会造成GPU端的“ <em><u>产能过剩</u></em> ”，CPU无法及时提供渲染数据而造成性能瓶颈。</p>
+<p>与此同时，TBR架构下优化过的GPU，会先将顶点数据存储到FrameData队列，如果Drawcall数量过多，且顶点数量巨大，万一FrameData承装的内存放不下了，就得先将数据移动到别处，进而大大降低了访问速度。这也是我们需要控制DrawCall数量和顶点数的一个重要原因。</p>
+<p>游戏开发中，常见的降低Drawcall的方式，无非以下几种：</p>
+<h5 id="动态合批"><a href="#动态合批" class="headerlink" title="动态合批"></a>动态合批</h5><blockquote>
+<p>在每一帧都对需要的网格进行合批处理，这样的好处就是合批的物体仍然可以各自移动，但是必须使用同一个材质。当所需合批的顶点数过多时，其实会对CPU产生额外的计算开销。因此在做动态合批的时候，通常会有顶点数的限制，需要根据实际需要做好取舍。</p>
+</blockquote>
+<h5 id="静态合批"><a href="#静态合批" class="headerlink" title="静态合批"></a>静态合批</h5><blockquote>
+<p>只进行一次合批处理，生成一个大的网格，性能优于动态合批，但没有动态合批灵活（只能作用于静态物体），并且会有较高的内存占用。</p>
+</blockquote>
+<h6 id="Shader-LOD"><a href="#Shader-LOD" class="headerlink" title="Shader LOD"></a>Shader LOD</h6><blockquote>
+<p>根据机型或摄像机距离，使用不同的材质shader，尽可能地降低细节表现，去除不必要的渲染Pass以及计算开销。</p>
+</blockquote>
+<h5 id="遮挡剔除"><a href="#遮挡剔除" class="headerlink" title="遮挡剔除"></a>遮挡剔除</h5><blockquote>
+<p>常见于大世界场景的游戏中，对于摄像机可视范围之外的物体可以进行视锥体剔除，但是可视范围内的那些已经被遮挡住了的物体，可能仍然会去进行绘制，造成不必要的性能损耗。</p>
+</blockquote>
+<h4 id="Overdraw"><a href="#Overdraw" class="headerlink" title="Overdraw"></a>Overdraw</h4><p>对需要绘制的物体进行排序，是游戏引擎规避性能开销的一种常见手段。非透明物体相对摄像机由近及远地排序绘制，可以有效剔除那些深度测试不通过的片元。但对于那些未被遮挡（深度测试通过）的<strong>透明物体</strong>，由于需要开启混合计算，因此在Early-Z阶段也没法剔除掉那些背后的图元数据，这就造成了同一个像素的多次(过度)绘制，即我们常说的 <strong>Overdraw</strong> 。</p>
+<p>GPU中跟Overdraw有关的指标可以参考<strong>像素填充率</strong>，即每秒所能渲染的最大像素数量。在确保带宽没有遇到性能瓶颈后（改用压缩纹理格式），如果降低设备分辨率后，帧率一下子上去了，那么很可能就是像素填充率遇到了瓶颈。这时候就需要看看Overdraw是否在一个合理的范围内，是否有优化的空间。</p>
+<p>实际的游戏开发中，最常见的Overdraw大户莫过于<strong>粒子特效</strong>了。美术同学在制作粒子特效的时候，往往会为了追求细节效果而忽略掉Overdraw的问题。大量的透明粒子相叠加，造成的性能开销是十分可怖的。为此，我们最好在立项之初就设定好一些粒子特效的制作规范，或是一些建议要求来约束美术设计粒子效果。</p>
+<blockquote>
+<ol>
+<li>一个复合粒子系统（如爆炸），子特效尽量不要超过5个（叠加过曝也应考虑优化）</li>
+<li>粒子所占的屏幕面积尽量不要过大，可以考虑使用Mesh来替换</li>
+<li>纹理中透明不可见的部分尽可能地少</li>
+</ol>
+</blockquote>
+<p>为了照顾低端机型，我们可以对粒子特效采取分级的策略，等级越低，特效表现越简单，同时也可以从粒子数量、运算模块来进行精简。如果还是不能满足性能要求，也可以考虑改用帧动画来替代粒子特效。</p>
 
-class A
-{
-public:
-    A () = default;
-    A (int a) { mA = a; };
-    virtual ~A() = default;
-    void foo()
-    {
-        printf(&quot;foo excute!\n&quot;);
-    }
-private:
-    int mA;
-}
-
-int main(void)
-{
-    sol::state lua;
-    // 打开lua中的相关库，如table、string等
-    lua.open_libraries();
-    lua.new_usertype&lt;A&gt;
-    (
-        &quot;A&quot;, // Lua中识别的类名
-        sol::constructors&lt;sol::types&lt;int&gt;&gt;(),
-        &quot;foo&quot;, &amp;A::foo // 绑定成员函数foo
-    )
-
-    // 执行一段Lua程序
-    lua.script(&quot; local a = A.new(); a:foo(); &quot;)
-}
-</code></pre><p>上述程序中，将一个简单的类A绑定到了Lua代码中，在Lua代码中可以创建一个a对象并调用其成员函数foo()。其中，A类除了默认构造函数外，还有一个带参数的构造函数，需要使用sol::constructors进行封装，并通过sol::types&lt;&gt;模板来指定其参数列表。</p>
-<h4 id="设置全局函数"><a href="#设置全局函数" class="headerlink" title="设置全局函数"></a>设置全局函数</h4><p>我们可以将一个C++的函数设置到Lua中作为全局函数调用，代码如下:</p>
-<pre><code>sol::state lua;
-lua.set_function(&quot;func&quot;, func); // func变量为C++函数地址
-</code></pre><h4 id="重载函数绑定"><a href="#重载函数绑定" class="headerlink" title="重载函数绑定"></a>重载函数绑定</h4><p>如果一个类中的某个成员函数被重载了，即函数名及返回值相同，参数列表不同。我们可以这样绑定:</p>
-<pre><code>sol::state lua;
-lua.new_usertype&lt;A&gt;
-(
-    &quot;A&quot;, // sol会帮你构造一个默认构造函数
-    &quot;foo&quot;, sol::overload(sol::resolve&lt;void(int)&gt;(&amp;A::foo),
-        sol::overload(sol::resolve&lt;void(int, int)&gt;(&amp;A::foo)))
-)
-</code></pre><p>假设A类包含两个名字都叫做foo的成员函数，都没有返回值(void)，一个是需要一个int作为参数，另一个是需要两个int作为参数，当Lua代码中调用foo函数的时候，Sol会根据你传递的参数来判断调用对应哪个绑定的C++函数。</p>
-<h4 id="将枚举映射到Lua的全局table中"><a href="#将枚举映射到Lua的全局table中" class="headerlink" title="将枚举映射到Lua的全局table中"></a>将枚举映射到Lua的全局table中</h4><p>有时候在C++中会定义许多枚举，为了方便Lua代码中可以方便地使用对应的枚举类型，我们可以将其绑定到一个Lua全局table中。</p>
-<pre><code>enum Color
-{
-    RED,
-    GREEN,
-    BLUE
-};
-sol::state lua;
-lua[&quot;Color&quot;] = lua.create_table_with(&quot;RED&quot;, RED, &quot;GREEN&quot;, GREEN, &quot;BLUE&quot;, BLUE);
-lua.script(&quot;Color.RED&quot;)
-</code></pre><p>上段代码中，我们实际上构建了一个全局table，名字叫做Color，并将table的key对应的value设置成枚举Color中的对应项，这样就实现了在Lua使用某个枚举里的内容。</p>
-<h3 id="进阶使用"><a href="#进阶使用" class="headerlink" title="进阶使用"></a>进阶使用</h3><h4 id="将Lua的table传到C-中"><a href="#将Lua的table传到C-中" class="headerlink" title="将Lua的table传到C++中"></a>将Lua的table传到C++中</h4><p>很多时候，我们需要将一个table传到C++层来使用，Sol为我们封装了sol::table类型来表示Lua中的table，假设我们定义了一个C++函数，其参数就是sol::table。</p>
-<pre><code>void foo(sol::table t)
-{
-    // t 表示一个从Lua层传来的table
-}
-
-sol::state lua;
-lua.set_function(&quot;foo&quot;, foo);
-
-lua.script(&quot;local t = { 1, 2, 3, 4 }; foo(t); &quot;)
-</code></pre><p>通过上边Lua代码的调用，使得一个内容是“1, 2, 3, 4”的table传给了C++层。</p>
-<h4 id="遍历Lua传来的table"><a href="#遍历Lua传来的table" class="headerlink" title="遍历Lua传来的table"></a>遍历Lua传来的table</h4><p>由于Lua中只有table这一种数据结构，它既可以表示数组也可以表示HashMap的结构，因此遍历获取sol::table中的内容显得更加复杂。Sol重载了[]让我们可以很方便地去获取table中的值，可以传递索引或key值。</p>
-<pre><code>void foo(sol::table t)
-{
-    // lua table { 1, 2, 3, 4 }
-    sol::object obj = t[1];
-    int first = obj.as&lt;int&gt;();  // first is 1
-
-    // lua table { a = &quot;a&quot;, b = 2 }
-    sol::object a = t[&quot;a&quot;];
-    sol::object b = t[&quot;b&quot;];
-    sol::type atype = a.get_type(); // atype 等于 sol::type::string
-    sol::type btype = b.get_type(); // btype 等于 sol::type::number
-    std::string astr = a.as&lt;std::string&gt;(); // a
-    int bnum = b.as&lt;int&gt;();  // 2
-}
-</code></pre><p>通过[]得到的table中的值并不能直接当成number或是string来使用，它实际上是sol::proxy代理类型，我们可以将其隐式转换成sol::object类型，并通过 <strong>as&lt;&gt;()</strong> 来获取其在Lua中代表的值对应的C++类型。</p>
-<p>如果我们并不清楚这个Lua层传入的table是怎样的结构，可以采取遍历并判断对应key、value的类型，从而得到我们实际想要的值，代码如下：</p>
-<pre><code>void foo(sol::table t)
-{
-    for (auto&amp; kv : t)
-    {
-        sol::object key = kv.first;
-        sol::object val = kv.second;
-        printf(&quot;key type : %d, val type : %d\n&quot;, key.get_type(), val.get_type());
-        switch (key.get_type())
-        {
-            case sol::type::number:
-                // 这是一个数组
-                break;
-            case sol::type::string:
-                // 键值对table
-                break;
-        }
-        switch (val.get_type())
-        {
-            case sol::type::number:
-                break;
-            case sol::type::string:
-                break;
-            case sol::type::table:
-                break;
-        }
-    }
-}
-</code></pre><h4 id="让代码更加健壮"><a href="#让代码更加健壮" class="headerlink" title="让代码更加健壮"></a>让代码更加健壮</h4><p>由于在Lua中类型的概念很弱，函数定义的参数并不会指定具体类型，这导致当我们想调用某个C++绑定过来的接口传递table的时候，很有可能有意或无意传递了一个nil过去。如果该函数在C++中指定的类型是sol::table，而在Lua传递一个nil值会发生很多不可控的错误，因此需要我们针对这种情况特殊处理以保证代码更加健壮。</p>
-<p>无论是sol::object还是sol::table、sol::function等类型，都继承于sol::reference类。因此，可以通过定义在sol::reference中的 <strong>valid()</strong> 函数即可判断当前对象是否可用。sol::table类型也可以通过 <strong>empty()</strong> 来判断当前table是否包含内容。</p>
-<pre><code>void foo(sol::table t)
-{
-    if (! t.valid() || t.empty())
-        return;
-    // 执行到这表明t并不为nil或是空表，可以继续代码逻辑
-}
-</code></pre><h4 id="隐式传递Lua状态机"><a href="#隐式传递Lua状态机" class="headerlink" title="隐式传递Lua状态机"></a>隐式传递Lua状态机</h4><p>虽然Sol帮我们封装了很多简单易用的接口，但实际开发过程中难免还是需要自己去和Lua状态机打交道。在之前代码经常出现的sol::state中，我们可以通过 <strong>lua_state()</strong> 接口来获取lua_State指针。</p>
-<p>同时，Sol封装了一个sol::this_state结构体，可以方便地将其隐式地转成lua_State指针。在绑定到Lua中的C++函数里，可以在参数列表的任意位置添加sol::this_state声明，而在Lua代码中调用该函数时则可以忽略该参数，Sol会自动帮你将Lua代码执行时的状态机作为sol::this_state来进行传递。</p>
-<pre><code>void foo(sol::table t, sol::this_state l)
-{
-    // 向Lua栈中push一个字符串
-    lua_pushstring(l, &quot;hello&quot;);
-    // 构建一个sol::object对象
-    sol::object obj = sol::make_object(l, t);
-}
-
-int main(void)
-{
-    sol::state lua;
-    lua.set_function(&quot;foo&quot;, foo);
-    // 执行Lua代码时，调用foo函数仅传递了一个table作为参数
-    lua.script(&quot;local t = { a = 1, b = 2 }; foo(t);&quot;);
-}
-</code></pre><h4 id="C-与Lua的返回值"><a href="#C-与Lua的返回值" class="headerlink" title="C++与Lua的返回值"></a>C++与Lua的返回值</h4><h5 id="接收来自Lua的多个返回值"><a href="#接收来自Lua的多个返回值" class="headerlink" title="接收来自Lua的多个返回值"></a>接收来自Lua的多个返回值</h5><pre><code>int main () {
-    sol::state lua;
-
-    lua.script(&quot;function f (a, b, c) return a, b, c end&quot;);
-
-    std::tuple&lt;int, int, int&gt; result;
-    result = lua[&quot;f&quot;](1, 2, 3);
-    // result == { 1, 2, 3 }
-    int a, int b;
-    std::string c;
-    sol::tie( a, b, c ) = lua[&quot;f&quot;](1, 2, &quot;bark&quot;);
-    // a == 1
-    // b == 2
-    // c == &quot;bark&quot;
-}
-</code></pre><h5 id="返回多种类型给Lua"><a href="#返回多种类型给Lua" class="headerlink" title="返回多种类型给Lua"></a>返回多种类型给Lua</h5><p>在C++代码中，无法做到像Lua那样可以灵活地返回各种类型的值，但是我们可以利用sol::object来封装成不同的“Lua类型”返回给Lua层。</p>
-<pre><code>sol::object fancy_func (sol::object a, sol::object b, sol::this_state s) {
-    sol::state_view lua = s;
-    if (a.is&lt;int&gt;() &amp;&amp; b.is&lt;int&gt;()) {
-            return sol::make_object(lua, a.as&lt;int&gt;() + b.as&lt;int&gt;());
-    }
-    else if (a.is&lt;bool&gt;()) {
-            bool do_triple = a.as&lt;bool&gt;();
-            return sol::make_object(lua, b.as&lt;double&gt;() * ( do_triple ? 3 : 1 ) );
-    }
-    return sol::make_object(lua, sol::nil);
-}
-
-sol::state lua;
-
-lua[&quot;f&quot;] = fancy_func;
-
-int result = lua[&quot;f&quot;](1, 2);
-// result == 3
-double result2 = lua[&quot;f&quot;](false, 2.5);
-// result2 == 2.5
-
-// call in Lua, get result
-lua.script(&quot;result3 = f(true, 5.5)&quot;);
-double result3 = lua[&quot;result3&quot;];
-// result3 == 16.5
-</code></pre>
       
     </div>
 
@@ -671,12 +526,6 @@ double result3 = lua[&quot;result3&quot;];
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/lua-binding/" rel="tag"># lua binding</a>
-          
-        </div>
-      
 
       
       
@@ -706,8 +555,8 @@ double result3 = lua[&quot;result3&quot;];
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/03/02/2016-03-02-lua-gc/" rel="next" title="Lua的gc机制">
-                <i class="fa fa-chevron-left"></i> Lua的gc机制
+              <a href="/2020/04/30/2020-04-30-talk-about-ecs/" rel="next" title="聊聊ECS架构与实际应用">
+                <i class="fa fa-chevron-left"></i> 聊聊ECS架构与实际应用
               </a>
             
           </div>
@@ -715,10 +564,6 @@ double result3 = lua[&quot;result3&quot;];
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/24/2016-11-24-genymotion-simulator-download/" rel="prev" title="Genymotion模拟器下载失败的解决方案">
-                Genymotion模拟器下载失败的解决方案 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -946,7 +791,7 @@ double result3 = lua[&quot;result3&quot;];
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sol2简介"><span class="nav-number">1.</span> <span class="nav-text">Sol2简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础使用"><span class="nav-number">2.</span> <span class="nav-text">基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#绑定第一个类"><span class="nav-number">2.1.</span> <span class="nav-text">绑定第一个类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置全局函数"><span class="nav-number">2.2.</span> <span class="nav-text">设置全局函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重载函数绑定"><span class="nav-number">2.3.</span> <span class="nav-text">重载函数绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将枚举映射到Lua的全局table中"><span class="nav-number">2.4.</span> <span class="nav-text">将枚举映射到Lua的全局table中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶使用"><span class="nav-number">3.</span> <span class="nav-text">进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#将Lua的table传到C-中"><span class="nav-number">3.1.</span> <span class="nav-text">将Lua的table传到C++中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遍历Lua传来的table"><span class="nav-number">3.2.</span> <span class="nav-text">遍历Lua传来的table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#让代码更加健壮"><span class="nav-number">3.3.</span> <span class="nav-text">让代码更加健壮</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐式传递Lua状态机"><span class="nav-number">3.4.</span> <span class="nav-text">隐式传递Lua状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-与Lua的返回值"><span class="nav-number">3.5.</span> <span class="nav-text">C++与Lua的返回值</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#接收来自Lua的多个返回值"><span class="nav-number">3.5.1.</span> <span class="nav-text">接收来自Lua的多个返回值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#返回多种类型给Lua"><span class="nav-number">3.5.2.</span> <span class="nav-text">返回多种类型给Lua</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Bandwidth"><span class="nav-number">1.</span> <span class="nav-text">Bandwidth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Drawcall"><span class="nav-number">2.</span> <span class="nav-text">Drawcall</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#动态合批"><span class="nav-number">2.1.</span> <span class="nav-text">动态合批</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#静态合批"><span class="nav-number">2.2.</span> <span class="nav-text">静态合批</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Shader-LOD"><span class="nav-number">2.2.1.</span> <span class="nav-text">Shader LOD</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#遮挡剔除"><span class="nav-number">2.3.</span> <span class="nav-text">遮挡剔除</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Overdraw"><span class="nav-number">3.</span> <span class="nav-text">Overdraw</span></a></li></ol></div>
             
 
           </div>
@@ -1111,9 +956,9 @@ double result3 = lua[&quot;result3&quot;];
   
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/';
-        this.page.identifier = '2016/08/09/2016-08-09-sol2-tutorail/';
-        this.page.title = 'Sol2使用教程';
+        this.page.url = 'http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/';
+        this.page.identifier = '2020/05/21/2020-05-21-mobile-optimized-3factor/';
+        this.page.title = '手游开发中渲染优化的三个要素';
         };
       function loadComments () {
         var d = document, s = d.createElement('script');
