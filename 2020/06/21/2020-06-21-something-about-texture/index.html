@@ -137,7 +137,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zH1A.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zqXt.md.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zj78.jpg">
-<meta property="og:updated_time" content="2020-06-22T02:39:18.455Z">
+<meta property="og:updated_time" content="2020-06-25T14:24:49.371Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="纹理那些事儿">
 <meta name="twitter:description" content="纹理概述在计算机图形学中，纹理(Texture) 是我们经常会提及的一个名词。 直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。 但在图形学中，纹理更多地是被认作 一块数据，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。 纹理是由 纹素（texel） 构成的，每个纹素记录">
@@ -400,7 +400,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-06-22 10:39:18" itemprop="dateModified" datetime="2020-06-22T10:39:18+08:00">2020-06-22</time>
+                <time title="修改时间：2020-06-25 22:24:49" itemprop="dateModified" datetime="2020-06-25T22:24:49+08:00">2020-06-25</time>
               
             
           </span>
@@ -468,6 +468,7 @@
 <p>但在图形学中，纹理更多地是被认作 <strong>一块数据</strong>，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。</p>
 <p>纹理是由 <strong>纹素（texel）</strong> 构成的，每个纹素记录着相应的颜色信息，它类似于屏幕的 <strong>像素（pixel）</strong> 但又与像素不保证是一一对应的。</p>
 <p>那么纹理为什么会被广泛使用呢？</p>
+<a id="more"></a>
 <p>这是因为，我们看到现实世界中所呈现出丰富的颜色，是由于不同物体会吸收一部分光的波长并反射出另一部分出来（如红色物体实际上是因为反射了大部分红色波长出来），最终通过眼睛传入大脑计算成像。而通过计算机去实时模拟这一过程无疑是复杂且耗时的，尤其是游戏要求在短短的一帧（少于0.016s）中就完成一次场景渲染。</p>
 <p>为了解决这个问题，人们想到了一个办法：找到一张图片（离线渲染生成），然后把它“粘”在物体的表面上，就像贴墙纸一样。而这一“粘”的过程，我们管它叫做 <strong>纹理映射（texture mapping）</strong>，实际上也就是一块纹理数据与3D模型建立关联的过程。</p>
 <p>看过武侠小说的应该都听说过“易容术”，将不同的“人皮子”贴在脸上，就可以易容成别人的模样。其实这就是一个简单的纹理映射的过程。</p>
