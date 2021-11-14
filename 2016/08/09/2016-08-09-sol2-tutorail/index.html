@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Sol2简介Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。 Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sol2使用教程">
+<meta property="og:url" content="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/index.html">
+<meta property="og:site_name" content="爱丸游戏工作室">
+<meta property="og:description" content="Sol2简介Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。 Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-08-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.229Z">
+<meta property="article:author" content="xujh">
+<meta property="article:tag" content="lua binding">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sol2使用教程 | 爱丸游戏工作室</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">爱丸游戏工作室</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sol2使用教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2016-08-09T00:00:00+08:00">2016-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Lua/" itemprop="url" rel="index"><span itemprop="name">Lua</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Sol2简介"><a href="#Sol2简介" class="headerlink" title="Sol2简介"></a>Sol2简介</h3><p>Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua C API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。</p>
+<p>Sol支持Lua的绝大多数版本，包括 5.1、5.2、5.3和LuaJit等，但由于代码中用到了许多C++11/14特性，因此编译时需要编译器支持C++14标准。</p>
+<p>具体使用以及介绍详情，请前往<a target="_blank" rel="noopener" href="https://github.com/ThePhD/sol2">Github仓库</a>和<a target="_blank" rel="noopener" href="http://sol2.readthedocs.io/en/latest/index.html">Sol2主页</a>。</p>
+<h3 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h3><p>从Sol的<a target="_blank" rel="noopener" href="https://github.com/ThePhD/sol2">Github仓库</a>clone下代码后，我们发现其目录下很多test开头的cpp/hpp文件，这些文件里面有着大量的Sol的使用示例以及各种特性的展示，而在example目录下的cpp文件都仅仅是一些最基础的使用示例。为了方便测试和体验Sol，你也可以自己建立一些自己的test.cpp文件，首先你要在源文件中include引用sol.hpp头文件，这样才能使用Sol提供的接口。而在使用gcc编译的时候，需要指定关联头文件的路径，可以使用如下命令：</p>
+<pre><code>g++ test.cpp -Isolpath/single/sol -llua -std=c++14
+</code></pre>
+<p>其中solpath是你Sol2的具体路径，在Sol2的项目目录下，有一个single/sol/sol.hpp头文件，这个头文件集成了所有的相关代码到一起，所以编译时 -I 后仅指定这一个路径就可以了，同时要保证你的gcc编译器支持C++14标准。</p>
+<span id="more"></span>
+
+<h4 id="绑定第一个类"><a href="#绑定第一个类" class="headerlink" title="绑定第一个类"></a>绑定第一个类</h4><pre><code>#include &quot;stdio.h&quot;
+#include &quot;sol.hpp&quot;
+
+class A
+&#123;
+public:
+    A () = default;
+    A (int a) &#123; mA = a; &#125;;
+    virtual ~A() = default;
+    void foo()
+    &#123;
+        printf(&quot;foo excute!\n&quot;);
+    &#125;
+private:
+    int mA;
+&#125;
+
+int main(void)
+&#123;
+    sol::state lua;
+    // 打开lua中的相关库，如table、string等
+    lua.open_libraries();
+    lua.new_usertype&lt;A&gt;
+    (
+        &quot;A&quot;, // Lua中识别的类名
+        sol::constructors&lt;sol::types&lt;int&gt;&gt;(),
+        &quot;foo&quot;, &amp;A::foo // 绑定成员函数foo
+    )
+
+    // 执行一段Lua程序
+    lua.script(&quot; local a = A.new(); a:foo(); &quot;)
+&#125;
+</code></pre>
+<p>上述程序中，将一个简单的类A绑定到了Lua代码中，在Lua代码中可以创建一个a对象并调用其成员函数foo()。其中，A类除了默认构造函数外，还有一个带参数的构造函数，需要使用sol::constructors进行封装，并通过sol::types&lt;&gt;模板来指定其参数列表。</p>
+<h4 id="设置全局函数"><a href="#设置全局函数" class="headerlink" title="设置全局函数"></a>设置全局函数</h4><p>我们可以将一个C++的函数设置到Lua中作为全局函数调用，代码如下:</p>
+<pre><code>sol::state lua;
+lua.set_function(&quot;func&quot;, func); // func变量为C++函数地址
+</code></pre>
+<h4 id="重载函数绑定"><a href="#重载函数绑定" class="headerlink" title="重载函数绑定"></a>重载函数绑定</h4><p>如果一个类中的某个成员函数被重载了，即函数名及返回值相同，参数列表不同。我们可以这样绑定:</p>
+<pre><code>sol::state lua;
+lua.new_usertype&lt;A&gt;
+(
+    &quot;A&quot;, // sol会帮你构造一个默认构造函数
+    &quot;foo&quot;, sol::overload(sol::resolve&lt;void(int)&gt;(&amp;A::foo),
+        sol::overload(sol::resolve&lt;void(int, int)&gt;(&amp;A::foo)))
+)
+</code></pre>
+<p>假设A类包含两个名字都叫做foo的成员函数，都没有返回值(void)，一个是需要一个int作为参数，另一个是需要两个int作为参数，当Lua代码中调用foo函数的时候，Sol会根据你传递的参数来判断调用对应哪个绑定的C++函数。</p>
+<h4 id="将枚举映射到Lua的全局table中"><a href="#将枚举映射到Lua的全局table中" class="headerlink" title="将枚举映射到Lua的全局table中"></a>将枚举映射到Lua的全局table中</h4><p>有时候在C++中会定义许多枚举，为了方便Lua代码中可以方便地使用对应的枚举类型，我们可以将其绑定到一个Lua全局table中。</p>
+<pre><code>enum Color
+&#123;
+    RED,
+    GREEN,
+    BLUE
+&#125;;
+sol::state lua;
+lua[&quot;Color&quot;] = lua.create_table_with(&quot;RED&quot;, RED, &quot;GREEN&quot;, GREEN, &quot;BLUE&quot;, BLUE);
+lua.script(&quot;Color.RED&quot;)
+</code></pre>
+<p>上段代码中，我们实际上构建了一个全局table，名字叫做Color，并将table的key对应的value设置成枚举Color中的对应项，这样就实现了在Lua使用某个枚举里的内容。</p>
+<h3 id="进阶使用"><a href="#进阶使用" class="headerlink" title="进阶使用"></a>进阶使用</h3><h4 id="将Lua的table传到C-中"><a href="#将Lua的table传到C-中" class="headerlink" title="将Lua的table传到C++中"></a>将Lua的table传到C++中</h4><p>很多时候，我们需要将一个table传到C++层来使用，Sol为我们封装了sol::table类型来表示Lua中的table，假设我们定义了一个C++函数，其参数就是sol::table。</p>
+<pre><code>void foo(sol::table t)
+&#123;
+    // t 表示一个从Lua层传来的table
+&#125;
+
+sol::state lua;
+lua.set_function(&quot;foo&quot;, foo);
+
+lua.script(&quot;local t = &#123; 1, 2, 3, 4 &#125;; foo(t); &quot;)
+</code></pre>
+<p>通过上边Lua代码的调用，使得一个内容是“1, 2, 3, 4”的table传给了C++层。</p>
+<h4 id="遍历Lua传来的table"><a href="#遍历Lua传来的table" class="headerlink" title="遍历Lua传来的table"></a>遍历Lua传来的table</h4><p>由于Lua中只有table这一种数据结构，它既可以表示数组也可以表示HashMap的结构，因此遍历获取sol::table中的内容显得更加复杂。Sol重载了[]让我们可以很方便地去获取table中的值，可以传递索引或key值。</p>
+<pre><code>void foo(sol::table t)
+&#123;
+    // lua table &#123; 1, 2, 3, 4 &#125;
+    sol::object obj = t[1];
+    int first = obj.as&lt;int&gt;();  // first is 1
+
+    // lua table &#123; a = &quot;a&quot;, b = 2 &#125;
+    sol::object a = t[&quot;a&quot;];
+    sol::object b = t[&quot;b&quot;];
+    sol::type atype = a.get_type(); // atype 等于 sol::type::string
+    sol::type btype = b.get_type(); // btype 等于 sol::type::number
+    std::string astr = a.as&lt;std::string&gt;(); // a
+    int bnum = b.as&lt;int&gt;();  // 2
+&#125;
+</code></pre>
+<p>通过[]得到的table中的值并不能直接当成number或是string来使用，它实际上是sol::proxy代理类型，我们可以将其隐式转换成sol::object类型，并通过 <strong>as&lt;&gt;()</strong> 来获取其在Lua中代表的值对应的C++类型。</p>
+<p>如果我们并不清楚这个Lua层传入的table是怎样的结构，可以采取遍历并判断对应key、value的类型，从而得到我们实际想要的值，代码如下：</p>
+<pre><code>void foo(sol::table t)
+&#123;
+    for (auto&amp; kv : t)
+    &#123;
+        sol::object key = kv.first;
+        sol::object val = kv.second;
+        printf(&quot;key type : %d, val type : %d\n&quot;, key.get_type(), val.get_type());
+        switch (key.get_type())
+        &#123;
+            case sol::type::number:
+                // 这是一个数组
+                break;
+            case sol::type::string:
+                // 键值对table
+                break;
+        &#125;
+        switch (val.get_type())
+        &#123;
+            case sol::type::number:
+                break;
+            case sol::type::string:
+                break;
+            case sol::type::table:
+                break;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="让代码更加健壮"><a href="#让代码更加健壮" class="headerlink" title="让代码更加健壮"></a>让代码更加健壮</h4><p>由于在Lua中类型的概念很弱，函数定义的参数并不会指定具体类型，这导致当我们想调用某个C++绑定过来的接口传递table的时候，很有可能有意或无意传递了一个nil过去。如果该函数在C++中指定的类型是sol::table，而在Lua传递一个nil值会发生很多不可控的错误，因此需要我们针对这种情况特殊处理以保证代码更加健壮。</p>
+<p>无论是sol::object还是sol::table、sol::function等类型，都继承于sol::reference类。因此，可以通过定义在sol::reference中的 <strong>valid()</strong> 函数即可判断当前对象是否可用。sol::table类型也可以通过 <strong>empty()</strong> 来判断当前table是否包含内容。</p>
+<pre><code>void foo(sol::table t)
+&#123;
+    if (! t.valid() || t.empty())
+        return;
+    // 执行到这表明t并不为nil或是空表，可以继续代码逻辑
+&#125;
+</code></pre>
+<h4 id="隐式传递Lua状态机"><a href="#隐式传递Lua状态机" class="headerlink" title="隐式传递Lua状态机"></a>隐式传递Lua状态机</h4><p>虽然Sol帮我们封装了很多简单易用的接口，但实际开发过程中难免还是需要自己去和Lua状态机打交道。在之前代码经常出现的sol::state中，我们可以通过 <strong>lua_state()</strong> 接口来获取lua_State指针。</p>
+<p>同时，Sol封装了一个sol::this_state结构体，可以方便地将其隐式地转成lua_State指针。在绑定到Lua中的C++函数里，可以在参数列表的任意位置添加sol::this_state声明，而在Lua代码中调用该函数时则可以忽略该参数，Sol会自动帮你将Lua代码执行时的状态机作为sol::this_state来进行传递。</p>
+<pre><code>void foo(sol::table t, sol::this_state l)
+&#123;
+    // 向Lua栈中push一个字符串
+    lua_pushstring(l, &quot;hello&quot;);
+    // 构建一个sol::object对象
+    sol::object obj = sol::make_object(l, t);
+&#125;
+
+int main(void)
+&#123;
+    sol::state lua;
+    lua.set_function(&quot;foo&quot;, foo);
+    // 执行Lua代码时，调用foo函数仅传递了一个table作为参数
+    lua.script(&quot;local t = &#123; a = 1, b = 2 &#125;; foo(t);&quot;);
+&#125;
+</code></pre>
+<h4 id="C-与Lua的返回值"><a href="#C-与Lua的返回值" class="headerlink" title="C++与Lua的返回值"></a>C++与Lua的返回值</h4><h5 id="接收来自Lua的多个返回值"><a href="#接收来自Lua的多个返回值" class="headerlink" title="接收来自Lua的多个返回值"></a>接收来自Lua的多个返回值</h5><pre><code>int main () &#123;
+    sol::state lua;
+
+    lua.script(&quot;function f (a, b, c) return a, b, c end&quot;);
+
+    std::tuple&lt;int, int, int&gt; result;
+    result = lua[&quot;f&quot;](1, 2, 3);
+    // result == &#123; 1, 2, 3 &#125;
+    int a, int b;
+    std::string c;
+    sol::tie( a, b, c ) = lua[&quot;f&quot;](1, 2, &quot;bark&quot;);
+    // a == 1
+    // b == 2
+    // c == &quot;bark&quot;
+&#125;
+</code></pre>
+<h5 id="返回多种类型给Lua"><a href="#返回多种类型给Lua" class="headerlink" title="返回多种类型给Lua"></a>返回多种类型给Lua</h5><p>在C++代码中，无法做到像Lua那样可以灵活地返回各种类型的值，但是我们可以利用sol::object来封装成不同的“Lua类型”返回给Lua层。</p>
+<pre><code>sol::object fancy_func (sol::object a, sol::object b, sol::this_state s) &#123;
+    sol::state_view lua = s;
+    if (a.is&lt;int&gt;() &amp;&amp; b.is&lt;int&gt;()) &#123;
+            return sol::make_object(lua, a.as&lt;int&gt;() + b.as&lt;int&gt;());
+    &#125;
+    else if (a.is&lt;bool&gt;()) &#123;
+            bool do_triple = a.as&lt;bool&gt;();
+            return sol::make_object(lua, b.as&lt;double&gt;() * ( do_triple ? 3 : 1 ) );
+    &#125;
+    return sol::make_object(lua, sol::nil);
+&#125;
+
+sol::state lua;
+
+lua[&quot;f&quot;] = fancy_func;
+
+int result = lua[&quot;f&quot;](1, 2);
+// result == 3
+double result2 = lua[&quot;f&quot;](false, 2.5);
+// result2 == 2.5
+
+// call in Lua, get result
+lua.script(&quot;result3 = f(true, 5.5)&quot;);
+double result3 = lua[&quot;result3&quot;];
+// result3 == 16.5
+</code></pre>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>您的赞赏是我前进的动力</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="xujh 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>xujh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/" title="Sol2使用教程">http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/lua-binding/" rel="tag"> <i class="fa fa-tag"></i> lua binding</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/03/02/2016-03-02-lua-gc/" rel="prev" title="Lua的gc机制">
+      <i class="fa fa-chevron-left"></i> Lua的gc机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/11/24/2016-11-24-genymotion-simulator-download/" rel="next" title="Genymotion模拟器下载失败的解决方案">
+      Genymotion模拟器下载失败的解决方案 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sol2%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Sol2简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%91%E5%AE%9A%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">绑定第一个类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%85%A8%E5%B1%80%E5%87%BD%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">设置全局函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%BD%BD%E5%87%BD%E6%95%B0%E7%BB%91%E5%AE%9A"><span class="nav-number">2.3.</span> <span class="nav-text">重载函数绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E6%9E%9A%E4%B8%BE%E6%98%A0%E5%B0%84%E5%88%B0Lua%E7%9A%84%E5%85%A8%E5%B1%80table%E4%B8%AD"><span class="nav-number">2.4.</span> <span class="nav-text">将枚举映射到Lua的全局table中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86Lua%E7%9A%84table%E4%BC%A0%E5%88%B0C-%E4%B8%AD"><span class="nav-number">3.1.</span> <span class="nav-text">将Lua的table传到C++中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%8D%E5%8E%86Lua%E4%BC%A0%E6%9D%A5%E7%9A%84table"><span class="nav-number">3.2.</span> <span class="nav-text">遍历Lua传来的table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E5%81%A5%E5%A3%AE"><span class="nav-number">3.3.</span> <span class="nav-text">让代码更加健壮</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E4%BC%A0%E9%80%92Lua%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.4.</span> <span class="nav-text">隐式传递Lua状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E4%B8%8ELua%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">3.5.</span> <span class="nav-text">C++与Lua的返回值</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E6%9D%A5%E8%87%AALua%E7%9A%84%E5%A4%9A%E4%B8%AA%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">3.5.1.</span> <span class="nav-text">接收来自Lua的多个返回值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%BB%99Lua"><span class="nav-number">3.5.2.</span> <span class="nav-text">返回多种类型给Lua</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xujh"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xujh</p>
+  <div class="site-description" itemprop="description">爱生活 | 爱丸子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AIplay Studio</span>
+</div>
+  <div id="site-runtime">
+  <span class="post-meta-item-icon">
+    <i class="fa fa-clock-o"></i>
+  </span>
+  <span id="runtime"></span>
+</div>
+
+<script language="javascript">
+  function isPC() {
+    var userAgentInfo = navigator.userAgent;
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    for (var i = 0; i < agents.length; i++) {
+      if (userAgentInfo.indexOf(agents[i]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function siteTime(openOnPC, start) {
+    window.setTimeout("siteTime(openOnPC, start)", 1000);
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+      start = new Date("2014-11-23 09:00:00 +0800");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var diff = now - start;
+
+    var diffYears = Math.floor(diff / years);
+    var diffDays = Math.floor((diff / days) - diffYears * 365);
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+
+    if (openOnPC) {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + " years " + diffDays + " days " + diffHours + " hours " + diffMinutes + " mins " + diffSeconds + " secs";
+    } else {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + "y " + diffDays + "d " + diffHours + "h " + diffMinutes + "m " + diffSeconds + "s";
+    }
+  }
+
+  var showOnMobile = false;
+  var openOnPC = isPC();
+  var start = new Date();
+  siteTime(openOnPC, start);
+
+  if (!openOnPC && !showOnMobile) {
+    document.getElementById('site-runtime').style.display = 'none';
+  }
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

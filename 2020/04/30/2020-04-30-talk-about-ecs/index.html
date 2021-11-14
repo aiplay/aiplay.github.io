@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。  E – Entity 实体，本质上是存放组件的容器 C – Component 组件，游戏所需的所有数据结构 S – System 系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊ECS架构与实际应用">
+<meta property="og:url" content="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/index.html">
+<meta property="og:site_name" content="爱丸游戏工作室">
+<meta property="og:description" content="ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。  E – Entity 实体，本质上是存放组件的容器 C – Component 组件，游戏所需的所有数据结构 S – System 系">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbytA.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb6fI.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbDTH.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbgpt.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb21P.gif">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTbB0e.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/29/JTb0mD.png">
+<meta property="article:published_time" content="2020-04-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.226Z">
+<meta property="article:author" content="xujh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/04/29/JTbytA.gif">
+
+<link rel="canonical" href="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>聊聊ECS架构与实际应用 | 爱丸游戏工作室</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">爱丸游戏工作室</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          聊聊ECS架构与实际应用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-30 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-30T00:00:00+08:00">2020-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ECS近年来已然成为游戏开发中比较热门的一种架构模式，最近被大家所熟识并热烈讨论，还是源于GDC2017，《守望先锋》针对它们的ECS架构进行的一次技术分享。针对FPS，MOBA这类的竞技游戏，ECS架构有着得天独厚的优势。下面我们先简单地介绍一下什么是ECS。</p>
+<ul>
+<li>E – Entity 实体，本质上是存放组件的容器</li>
+<li>C – Component 组件，游戏所需的所有数据结构</li>
+<li>S – System 系统，根据组件数据处理逻辑状态的管理器</li>
+</ul>
+<span id="more"></span>
+
+<p>这里需要强调一下，Componet组件只能存放数据，不能实现任何处理状态相关的函数，而System系统不可以自己去记录维护任何状态。说的通俗点，就是<u><strong>组件放数据，系统来处理</strong></u>。这么做的好处，就是为了尽可能地让数据与逻辑进行<strong>解耦</strong>。与此同时，一个良好的数据结构设计，也会以增加<strong>CPU缓存命中</strong>的形式来提升性能表现。但我认为，推动ECS流行的更深层次原因，是它的解耦理念，性能上还只是其次。</p>
+<p>试想一下，你在开发一款多人实时在线竞技游戏，无论是吃鸡也好，农药也罢，日益堆积的<strong>变动需求</strong>与越来越多的<strong>状态维护</strong>肯定是开发人员所需面对的主旋律。也许游戏设计之初，策划会信誓旦旦地跟你说，咱们要整个5v5对战的MOBA游戏，就跟王者农药差不多，不过咱们牛逼的地方在于英雄可以变成汽车，就像变形金刚那样：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbytA.gif" alt="1"></p>
+<p>假设你用面向对象设计中的”类-继承“模式，肯定会优先设计出一个“英雄”类来，它可能会有不同的技能和武器，当然这需要通过策划来配置，我们则根据这些不同的配置数据，来实例化出一个个独立的英雄。同时，这个类还要包含“变身”的功能，变成汽车后，“人”的一些行为会被限制，比如无法开枪射击，但是移动速度会大大增加，物理耐性提升等等。</p>
+<p>当你辛辛苦苦设计好满意的游戏架构后，策划又兴冲冲地跑过来，阐述他的新点子：英雄变成汽车状态后，应该有不同的形态表现，有的2个轮子的、4个轮子的，也有履带式的，最好还能支持没有轮子的概念车！在策划看来，这种仅仅调整一些配置性的东西，实现起来难度应该不大。但是对于开发者来说，移动的动作，车轮的印记特效等等，都需要重新考虑一番，好好地重构。</p>
+<p>没过几天，策划又鬼魅般地出现，提出了新的需求：我体验了下游戏原型，只是变身汽车的话游戏画面不够立体，打击感也不强，你看能不能再加个变身飞机的机制，最好能海陆空全方位战斗，就像这样婶儿的：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb6fI.gif" alt="2"></p>
+<p>没办法，还得继续扩展这个英雄类，让它的功能越来越“强大”，即使我们的内心几近崩溃的边缘。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbDTH.gif" alt="3"></p>
+<p>又过了几天，策划再次出现，还未说话，卒。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbgpt.gif" alt="6"></p>
+<p>当然，上面举的例子有很多玩笑的成分在里面，但如果你也是位游戏开发者的话，是不是会产生共鸣，有种似曾相识的感觉？策划的专业程度或许是一方面，但游戏的<strong>版本迭代</strong>与<strong>不断试错</strong>都是客观存在的事实，是无法逃避的。随着需求的不断累加，最初的那个“英雄类”会越来越臃肿。倘若你的项目中有多个程序员进行协作开发，那么恭喜你，代码的维护成本会指数级的增加！每个人都必须对英雄的方方面面了若指掌，否则一个不当的改动就可能造成毁灭性的灾难。</p>
+<p>这个时候，ECS架构就体现出了它的优势。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb21P.gif" alt="7"></p>
+<p>与传统的“类-继承”奉行的“我是什么”不同，基于组件化的ECS架构更强调的是“我有什么”，是一种<strong>组合优先</strong>的编程模式。使用组合而非继承，会使你的代码更具灵活性。还是上面的例子，针对游戏的玩法，我们会构建出一个英雄的Entity实体类，它更像一个空盒子，可以在创建英雄Entity实例的时候赋予它一个ID作为唯一标识。当我们将这个实体放到world下，也许什么也看不见，什么也做不了，这是因为它现在还什么数据都没有。此时就需要根据游戏的需求，来设计出不同的组件填充到这个实体当中。注意，应尽可能地保证组件设计上的<strong>扁平化</strong>，会让你的模块结构更加清晰，也大大增加了CPU缓存命中的概率。</p>
+<p>举个例子，常见的组件包括而不仅限于</p>
+<ul>
+<li>渲染组件 ：英雄的顶点、材质等数据，保证我们能正确地渲染到world中</li>
+<li>位置组件 ：记录着实体在这个world的真实位置</li>
+<li>特效组件 ：不同的时机，可能会需要播放不同的粒子特效以增强视觉感受</li>
+</ul>
+<p>此外，根据策划的各种奇葩需求，还可以衍生出不同的功能性组件，本质上都是数据的集合，之后会交由 System 来进行各种状态修改与逻辑计算。比如，想要一个英雄既能变成汽车又能变成飞机，我们可以设计出 Wheel 和 Wing 两个组件，存储数据的同时也表明不同实体的对应功能或身份。当然对应着的是处理该组件的System，一个 FlightSystem 可以去关注那些持有 Wing 的实体。确切点说，FlightSystem 其实只需要关注 Wing 组件就足够了，它不应该关心是哪个实体持有这个组件，只要能修改 Wing 的状态就足矣。</p>
+<p>这样，就实现了我们经常说的<strong>解耦</strong>。</p>
+<p>将复杂的游戏拆解成不同的逻辑处理单元 (System) ，而每个逻辑处理单元只关心那些向它注册监听的数据，其他数据一概不管。并且最主要的是，System 是不保存状态的，Component 才是状态的真正持有者。刚开始的时候，也许会很不适应，总想着在 System 里加点什么标识，好方便地进行状态回溯或者复用。这时应该警惕起来，你所设计的   System 职责是否单一，组件持有的数据是否过于复杂。<u><strong>将一个复杂的模块拆解成若干个相对简单的单元</strong></u>，不失为明智的选择。</p>
+<p>下面就是我们基于ECS而设计的新的游戏架构。</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTbB0e.png" alt="4"></p>
+<p>然而，现实总是残酷的。如果一个游戏真要这么简单，或许ECS也就没什么存在的价值了。仅就《守望先锋》分享所知，它们游戏中光 System 就上百个，并且为了保证 System 不保存状态，在游戏帧更新时，System 执行的时序就有了限制。并且很多情况下，很多System关心的组件只有一个（如输入事件），于是就有了<strong>Singleton Component</strong>。个人觉得，由于不同游戏的不同特质，某些情况下都很难去严格遵循ECS的架构约束，但毕竟架构是为人服务的，而不仅仅是束缚。在我们深刻理解了ECS的思想后，针对实际需要来做一些变通也是未尝不可的。</p>
+<p>就拿我参与开发的一款轻MOBA类的多人对战游戏为例，采用的网络通讯方式是protobuf加状态同步，伤害、状态等判定结果几乎都是放在服务器端来处理，客户端主要就是根据每一帧接收的网络消息来处理相应的数据、更新状态。由于客户端使用的语言是<strong>Lua</strong>，因此会使用一个table数据结构来保存游戏中注册的 System 实例，在帧循环遍历这个注册表，按照顺序依次执行每个 System 的<strong>Update</strong>函数。System 会处理自己内部维护的组件池，里面放的是注册进来希望被处理的组件，从而根据这些组件的数据来进行一些逻辑上的操作。</p>
+<p>解析protobuf数据后，每条协议消息发来的数据其实就是组件所要更新的，但由于服务器端并没有采用ECS这种设计模式，数据设计上也肯定会有些出入的地方，于是需要客户端来解析转换下。为此，引入了<strong>Driver</strong>的概念。首先，会有若干个表格来存放我们创建了的不同Entity 实例，每个Entity都会持有一个ID。服务器端下发的消息中总会包含某些实体ID，这样处理不同逻辑的 Driver 就会根据这些ID来找到它所需修改数据的Entity，再从Entity找出相关的 Component 组件，将proto消息里的数据更新给这个组件即可，剩下的工作就交给 System 了。</p>
+<p>至此，我们的ECS设计变种成了这个样子：</p>
+<p><img src="https://s1.ax1x.com/2020/04/29/JTb0mD.png" alt="5"></p>
+<p>上述设计中，由于多了一层Driver，并且游戏使用的是<strong>状态同步</strong>机制，因此帮助 System 分担了很多工作。System 仅仅是批量处理 Component 状态的管理者，每一帧遍历系统组件池里的所有组件 (此时的组件已经是 Driver 更新好数据了的) ，我们也可以根据自己的需要来设定刷新间隔，对于一些不需要在每个帧刷新都执行 Update 函数的 System ，可以降低它们的更新频率从而节约一些性能开销。而 Driver 层面，只是数据的一道“搬运工”，负责更新给 System 能够识别的组件的持有数据。</p>
+<p>当所在团队改用ECS后，起初都很不习惯这种新的编程模式，总会不知不觉中切换回“类-继承”的编程思路。但随着项目的推进，ECS所带来的一些优势变得愈发明显。首先，就是<strong>降低了团队协作成本</strong>。往昔的项目经历中后期时，总会出现某些又臭又长的 <strong>God Class</strong> ，甚至会出现一些功能重复的模块，同一个功能的函数被实现了两次！这种情境下，代码的维护成本可想而知。而在ECS编程模式下，每名开发人员，只需要关心自己负责的模块即可，System 很好地隔离模块之间的耦合。</p>
+<p>ECS也并非尽善尽美，随着系统不断地开发与扩展，会发现难免有时 System 要处理的数据过于复杂，很难只用一个单一组件就能表示，或是之前所说的只有一个 Component 会被 System 监控的Singleton情况十分常见。这就考验开发者的权衡取舍能力：如果一味细化 System 的种类，虽能保证模块与组件数据之间的解耦，但却无形中增加了 System 的维护成本，使得原本比较简单的逻辑变得复杂起来，难以维护。另一种做法是，建立组件之间的关联，可以是组件内部持有另一个组件的指针，也可以是几个组件组合成一个新的组件。但这样做就牺牲掉了组件设计上的<strong>扁平化原则</strong>。</p>
+<p>综上所述，世界上没有两全其美的好事，我们经常要去做决策、去权衡每种做法的利弊。一味刻板地循规蹈矩也是不可取的，越来越多的团队开发衍生出了新的ECS变种。但只要我们真正地理解了ECS的主旨与精髓，不断探索与改进，找到适合自己项目的最佳平衡点，它一定会成为助你高效开发的利器。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>您的赞赏是我前进的动力</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="xujh 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>xujh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/" title="聊聊ECS架构与实际应用">http://aiplay.studio/2020/04/30/2020-04-30-talk-about-ecs/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/15/2018-08-15-build-physics-system/" rel="prev" title="使用PhysX构建简单的物理系统">
+      <i class="fa fa-chevron-left"></i> 使用PhysX构建简单的物理系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/21/2020-05-21-mobile-optimized-3factor/" rel="next" title="手游开发中渲染优化的三个要素">
+      手游开发中渲染优化的三个要素 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xujh"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xujh</p>
+  <div class="site-description" itemprop="description">爱生活 | 爱丸子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AIplay Studio</span>
+</div>
+  <div id="site-runtime">
+  <span class="post-meta-item-icon">
+    <i class="fa fa-clock-o"></i>
+  </span>
+  <span id="runtime"></span>
+</div>
+
+<script language="javascript">
+  function isPC() {
+    var userAgentInfo = navigator.userAgent;
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    for (var i = 0; i < agents.length; i++) {
+      if (userAgentInfo.indexOf(agents[i]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function siteTime(openOnPC, start) {
+    window.setTimeout("siteTime(openOnPC, start)", 1000);
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+      start = new Date("2014-11-23 09:00:00 +0800");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var diff = now - start;
+
+    var diffYears = Math.floor(diff / years);
+    var diffDays = Math.floor((diff / days) - diffYears * 365);
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+
+    if (openOnPC) {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + " years " + diffDays + " days " + diffHours + " hours " + diffMinutes + " mins " + diffSeconds + " secs";
+    } else {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + "y " + diffDays + "d " + diffHours + "h " + diffMinutes + "m " + diffSeconds + "s";
+    }
+  }
+
+  var showOnMobile = false;
+  var openOnPC = isPC();
+  var start = new Date();
+  siteTime(openOnPC, start);
+
+  if (!openOnPC && !showOnMobile) {
+    document.getElementById('site-runtime').style.display = 'none';
+  }
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

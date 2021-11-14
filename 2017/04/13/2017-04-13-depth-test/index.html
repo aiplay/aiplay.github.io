@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在Op">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度测试">
+<meta property="og:url" content="http://aiplay.studio/2017/04/13/2017-04-13-depth-test/index.html">
+<meta property="og:site_name" content="爱丸游戏工作室">
+<meta property="og:description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在Op">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.225Z">
+<meta property="article:author" content="xujh">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://aiplay.studio/2017/04/13/2017-04-13-depth-test/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深度测试 | 爱丸游戏工作室</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">爱丸游戏工作室</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2017/04/13/2017-04-13-depth-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深度测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-13 00:00:00" itemprop="dateCreated datePublished" datetime="2017-04-13T00:00:00+08:00">2017-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>本文主要参考来自<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/01%20Depth%20testing/">《Learn OpenGL CN 深度测试》</a>这篇教程。</em></p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。</p>
+<p>下面说说__深度测试__，它发生在OpenGL管线中的fragment着色器运行之后的测试阶段，准确地说是在模板测试之后。深度测试默认是关闭着的，我们可以像这样来打开深度测试：</p>
+<pre><code>glEnable(GL_DEPTH_TEST);
+</code></pre>
+<p>开启深度测试就意味着OpenGL会去对深度缓冲中的深度值进行测试，而所谓的深度测试，实际上就是将fragment的实际z值与深度缓冲中存储着的对应z值通过__某种规则__进行比较。如果测试通过，会自动在深度缓冲区存储fragment的z值，测试失败则相应地丢弃该fragment。</p>
+<p><strong>【特别注意】在每次渲染之前，应使用glClear(GL_DEPTH_BUFFER_BIT)来清除深度缓冲区，否则仍会保留上一次进行深度测试时所写的深度值。</strong></p>
+<p>当然还存在这种情况，我们只想进行深度测试去丢弃那些未通过测试的fragment，但并不希望去更新深度缓冲区。此时，可以通过将其深度掩码设置为 <strong>GL_FALSE</strong> 来禁用深度缓冲区的写入操作。</p>
+<pre><code>glDepthMask(GL_FALSE);
+</code></pre>
+<span id="more"></span>
+
+<h3 id="深度测试函数"><a href="#深度测试函数" class="headerlink" title="深度测试函数"></a>深度测试函数</h3><p>之前说深度测试会按照某种规则进行比较，实际上OpenGL为我们提供了接口来设置比较运算符（亦称depth function）。调用方式如下：</p>
+<pre><code>glDepthFunc(GL_LESS);
+</code></pre>
+<p>其中参数选项不仅仅包含GL_LESS，还有其他的选项配置，大致含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GL_ALWAYS</td>
+<td>总是通过</td>
+</tr>
+<tr>
+<td>GL_NEVER</td>
+<td>永不通过</td>
+</tr>
+<tr>
+<td>GL_LESS</td>
+<td>fragment深度值小于缓冲区深度值时通过</td>
+</tr>
+<tr>
+<td>GL_EQUAL</td>
+<td>fragment深度值等于缓冲区深度值时通过</td>
+</tr>
+<tr>
+<td>GL_LEQUAL</td>
+<td>fragment深度值小于等于缓冲区深度值时通过</td>
+</tr>
+<tr>
+<td>GL_GREATER</td>
+<td>fragment深度值大于缓冲区深度值时通过</td>
+</tr>
+<tr>
+<td>GL_NOTEQUAL</td>
+<td>fragment深度值不等于缓冲区深度值时通过</td>
+</tr>
+<tr>
+<td>GL_GEQUAL</td>
+<td>fragment深度值大于等于缓冲区深度值时通过</td>
+</tr>
+</tbody></table>
+<h3 id="深度值精度"><a href="#深度值精度" class="headerlink" title="深度值精度"></a>深度值精度</h3><p>存储在深度缓冲区中的深度值介于__0.0__和__1.0__之间，而与之比较的是视图空间中可见对象的z值，该z值介于投影平头截体的近面与远面之间。因此需要一些方法将视图空间z值转换到[0,1]的范围内。通常有__线性__与__非线性__两种方式，但实际上我们只会采用非线性的方式。</p>
+<p>通常会让非线性深度方程和1/z成正比，这样做的目的是令那些可见对象的z值越近时精度越高，反之越远则精度越低。因此，在深度缓冲区中深度值为0.5并不意味着该对象的z值是在投影平头截体的中间位置。</p>
+<h3 id="深度冲突"><a href="#深度冲突" class="headerlink" title="深度冲突"></a>深度冲突</h3><p>__深度冲突__是指两个图元紧密地相互平行，而深度缓冲区的精度不足以区分判断哪一个更靠前的时候，这两个形状会出现相互交替的怪异现象。深度冲突问题目前还无法完全避免，但可以利用如下方式尽量规避：</p>
+<ol>
+<li><p>使用glPolygonOffset函数，将其分开渲染，先渲染一个，再通过glPolygonOffset函数来设置偏移量，接着渲染第二个。这用解决方案在效率上会受到一些影响。</p>
+</li>
+<li><p>尽可能地把视椎体近面设置得远一些。由于越靠近视椎体近面的位置深度值的精度越高，所以我们将其移远后，可以有效提高视椎体内部的深度值精度。但需根据实际情况进行调整，因为如果近面移动的太远会导致近处的物体被剪裁掉。</p>
+</li>
+<li><p>提高深度缓冲区的精度，多数的深度缓冲区的精度都是24位，但是一些显卡支持32位的深度值，这会让深度缓冲区的精度大幅度提高，但也会牺牲一些性能。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>您的赞赏是我前进的动力</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="xujh 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>xujh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://aiplay.studio/2017/04/13/2017-04-13-depth-test/" title="深度测试">http://aiplay.studio/2017/04/13/2017-04-13-depth-test/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OpenGL/" rel="tag"> <i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/01/2016-12-01-lua-oo-implement/" rel="prev" title="Lua中实现面向对象">
+      <i class="fa fa-chevron-left"></i> Lua中实现面向对象
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/03/29/2018-03-29-vps-build-ss/" rel="next" title="购买vps搭建ss服务教程">
+      购买vps搭建ss服务教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E6%B5%8B%E8%AF%95%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">深度测试函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%80%BC%E7%B2%BE%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">深度值精度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%86%B2%E7%AA%81"><span class="nav-number">4.</span> <span class="nav-text">深度冲突</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xujh"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xujh</p>
+  <div class="site-description" itemprop="description">爱生活 | 爱丸子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AIplay Studio</span>
+</div>
+  <div id="site-runtime">
+  <span class="post-meta-item-icon">
+    <i class="fa fa-clock-o"></i>
+  </span>
+  <span id="runtime"></span>
+</div>
+
+<script language="javascript">
+  function isPC() {
+    var userAgentInfo = navigator.userAgent;
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    for (var i = 0; i < agents.length; i++) {
+      if (userAgentInfo.indexOf(agents[i]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function siteTime(openOnPC, start) {
+    window.setTimeout("siteTime(openOnPC, start)", 1000);
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+      start = new Date("2014-11-23 09:00:00 +0800");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var diff = now - start;
+
+    var diffYears = Math.floor(diff / years);
+    var diffDays = Math.floor((diff / days) - diffYears * 365);
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+
+    if (openOnPC) {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + " years " + diffDays + " days " + diffHours + " hours " + diffMinutes + " mins " + diffSeconds + " secs";
+    } else {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + "y " + diffDays + "d " + diffHours + "h " + diffMinutes + "m " + diffSeconds + "s";
+    }
+  }
+
+  var showOnMobile = false;
+  var openOnPC = isPC();
+  var start = new Date();
+  siteTime(openOnPC, start);
+
+  if (!openOnPC && !showOnMobile) {
+    document.getElementById('site-runtime').style.display = 'none';
+  }
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

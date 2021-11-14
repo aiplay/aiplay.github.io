@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="评价一款游戏的性能好坏，我们通常会用到帧率（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。 性能优化要谨遵二八原则：20%的代码影响80%的性能瓶颈。因此要合理地找出性能瓶颈所在，避免负优化。下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手游开发中渲染优化的三个要素">
+<meta property="og:url" content="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/index.html">
+<meta property="og:site_name" content="爱丸游戏工作室">
+<meta property="og:description" content="评价一款游戏的性能好坏，我们通常会用到帧率（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。 性能优化要谨遵二八原则：20%的代码影响80%的性能瓶颈。因此要合理地找出性能瓶颈所在，避免负优化。下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/21/YHgLC9.png">
+<meta property="article:published_time" content="2020-05-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.229Z">
+<meta property="article:author" content="xujh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/21/YHgLC9.png">
+
+<link rel="canonical" href="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>手游开发中渲染优化的三个要素 | 爱丸游戏工作室</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">爱丸游戏工作室</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          手游开发中渲染优化的三个要素
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-21T00:00:00+08:00">2020-05-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>评价一款游戏的性能好坏，我们通常会用到<strong>帧率</strong>（每秒钟的渲染帧数）作为主要参考指标。当然，手游这块功耗也是一个重要因素，但主要还是看帧率。像MOBA、FPS类的游戏，帧率肯定是越高越好，出于功耗与显示设备的限制，一般跑满也就在60fps左右。而像其他的棋牌、放置类游戏，帧率只要有30fps就足够了。</p>
+<p>性能优化要谨遵<strong>二八原则</strong>：<em>20%的代码影响80%的性能瓶颈</em>。因此要合理地找出性能瓶颈所在，避免负优化。下面就三个比较常见的方面：<strong>bandwidth</strong>、<strong>drawcall</strong>、<strong>overdraw</strong>（fillrate）来分别阐述渲染阶段是如何造成性能瓶颈以及对应的解决办法。</p>
+<span id="more"></span>
+
+<h3 id="Bandwidth"><a href="#Bandwidth" class="headerlink" title="Bandwidth"></a>Bandwidth</h3><p>移动端的GPU设计之初，优先注重的肯定是功耗问题，然而在实际渲染一帧图像的时候，对功耗影响最大的因素就是<strong>带宽（bandwidth）</strong>。</p>
+<p>为什么会是带宽呢？</p>
+<p>这是因为出于空间的考虑，手机芯片的设计上采用了SoC架构，因此内存与显存实际上是共享在一块物理内存上的，在OpenGL ES规范中，内存与显存中的数据却不能共享。在有限带宽的前提下，我们不妨计算一下，一台分辨率为1920*1080的移动设备，按60帧率来算，每秒钟1次overdraw产生的数据量为：</p>
+<blockquote>
+<p>1920 * 1080 * 32 * 60 / (1024 * 1024) = 3.7 Gb</p>
+</blockquote>
+<p>如果遇到了大量的半透明物体或是粒子特效，那么数据量上可能会成倍的增长。</p>
+<p>如此大量的数据存储在显存的FrameBuffer中，GPU要以高昂地代价频繁地去显存访问FrameBuffer里的数据，这显然是很难接受的。因此在移动端的显卡硬件上，想到了一种优化方式，就是将FrameBuffer拆分成不同的小块(tile)，每次可以先将这一小块的数据放到访问速度更快的On-Chip Memory中去，GPU会先从tile中一块块地去进行渲染，等整体渲染完成之后，再将数据搬回显存上。</p>
+<p>我们将这种模式称为 <strong>TBR（Tile Base Rendering）</strong>。</p>
+<p><img src="https://s1.ax1x.com/2020/05/21/YHgLC9.png" alt="TBR渲染管线"></p>
+<p>然而在TBR模式下，可能存在着这样的一个问题，如果对于CPU每一次传来的绘制命令都进行渲染的话，那么GPU必定会频繁、大量地对tile数据进行搬迁操作，这显然是不可接受的。为了解决这个问题，TBR一般的策略是：对于CPU提交的Draw Call请求，先只做顶点处理，将Vertex Shader计算的结果暂存到一个叫 <strong>FrameData</strong> 的地方。等到执行 <strong>Swap Buffer</strong> 的时候，再对整个数据做光栅化，进行绘制。</p>
+<p>既然是等所有的FrameData数据处理好后一次性进行绘制，GPU硬件上便进一步做了些延迟渲染相关的优化。例如iOS上的PowerVR，专门有一个叫 ISR 的硬件，会去处理FrameData中那些诸如深度测试、模板测试没有通过的数据，尽可能地只去渲染那些最终影响FrameBuffer的物体。</p>
+<p>我们将这种模式称为 <strong>TBDR（Tile Base Deffered Rendering）</strong>。</p>
+<p>基于移动端GPU特有的架构模式，需要我们做哪些优化方面的事情或是注意事项呢？</p>
+<ul>
+<li>使用压缩的纹理格式，如ETC、PVR等</li>
+<li>打开Mipmap（内存与带宽的权衡）</li>
+<li>减少Shader中的采样次数，尽量合并一些通道图</li>
+<li>控制总顶点数量</li>
+<li>不要频繁地切换FrameBuffer（后处理效果）</li>
+</ul>
+<h3 id="Drawcall"><a href="#Drawcall" class="headerlink" title="Drawcall"></a>Drawcall</h3><p>手机上CPU与GPU的关系，就好像客户端与服务端的CS架构。所谓Drawcall，可以理解为Client端的CPU向Server端的GPU发送的一次绘制命令，同时会传递需要被渲染的图元列表。现代GPU就为了<strong>高并发</strong>处理数据而生的，一般Drawcall的绘制数据计算起来应该还是绰绰有余。但由于CPU传递的渲染数据得通过PCI-E总线才能传到GPU显存中的全局存储区域，频繁且大量地提交绘制相对简单的绘制命令，会造成GPU端的“ <em><u>产能过剩</u></em> ”，CPU无法及时提供渲染数据而造成性能瓶颈。</p>
+<p>与此同时，TBR架构下优化过的GPU，会先将顶点数据存储到FrameData队列，如果Drawcall数量过多，且顶点数量巨大，万一FrameData承装的内存放不下了，就得先将数据移动到别处，进而大大降低了访问速度。这也是我们需要控制DrawCall数量和顶点数的一个重要原因。</p>
+<p>游戏开发中，常见的降低Drawcall的方式，无非以下几种：</p>
+<h5 id="动态合批"><a href="#动态合批" class="headerlink" title="动态合批"></a>动态合批</h5><blockquote>
+<p>在每一帧都对需要的网格进行合批处理，这样的好处就是合批的物体仍然可以各自移动，但是必须使用同一个材质。当所需合批的顶点数过多时，其实会对CPU产生额外的计算开销。因此在做动态合批的时候，通常会有顶点数的限制，需要根据实际需要做好取舍。</p>
+</blockquote>
+<h5 id="静态合批"><a href="#静态合批" class="headerlink" title="静态合批"></a>静态合批</h5><blockquote>
+<p>只进行一次合批处理，生成一个大的网格，性能优于动态合批，但没有动态合批灵活（只能作用于静态物体），并且会有较高的内存占用。</p>
+</blockquote>
+<h6 id="Shader-LOD"><a href="#Shader-LOD" class="headerlink" title="Shader LOD"></a>Shader LOD</h6><blockquote>
+<p>根据机型或摄像机距离，使用不同的材质shader，尽可能地降低细节表现，去除不必要的渲染Pass以及计算开销。</p>
+</blockquote>
+<h5 id="遮挡剔除"><a href="#遮挡剔除" class="headerlink" title="遮挡剔除"></a>遮挡剔除</h5><blockquote>
+<p>常见于大世界场景的游戏中，对于摄像机可视范围之外的物体可以进行视锥体剔除，但是可视范围内的那些已经被遮挡住了的物体，可能仍然会去进行绘制，造成不必要的性能损耗。</p>
+</blockquote>
+<h3 id="Overdraw"><a href="#Overdraw" class="headerlink" title="Overdraw"></a>Overdraw</h3><p>对需要绘制的物体进行排序，是游戏引擎规避性能开销的一种常见手段。非透明物体相对摄像机由近及远地排序绘制，可以有效剔除那些深度测试不通过的片元。但对于那些未被遮挡（深度测试通过）的<strong>透明物体</strong>，由于需要开启混合计算，因此在Early-Z阶段也没法剔除掉那些背后的图元数据，这就造成了同一个像素的多次(过度)绘制，即我们常说的 <strong>Overdraw</strong> 。</p>
+<p>GPU中跟Overdraw有关的指标可以参考<strong>像素填充率</strong>，即每秒所能渲染的最大像素数量。在确保带宽没有遇到性能瓶颈后（改用压缩纹理格式），如果降低设备分辨率后，帧率一下子上去了，那么很可能就是像素填充率遇到了瓶颈。这时候就需要看看Overdraw是否在一个合理的范围内，是否有优化的空间。</p>
+<p>实际的游戏开发中，最常见的Overdraw大户莫过于<strong>粒子特效</strong>了。美术同学在制作粒子特效的时候，往往会为了追求细节效果而忽略掉Overdraw的问题。大量的透明粒子相叠加，造成的性能开销是十分可怖的。为此，我们最好在立项之初就设定好一些粒子特效的制作规范，或是一些建议要求来约束美术设计粒子效果。</p>
+<blockquote>
+<ol>
+<li>一个复合粒子系统（如爆炸），子特效尽量不要超过5个（叠加过曝也应考虑优化）</li>
+<li>粒子所占的屏幕面积尽量不要过大，可以考虑使用Mesh来替换</li>
+<li>纹理中透明不可见的部分尽可能地少</li>
+</ol>
+</blockquote>
+<p>为了照顾低端机型，我们可以对粒子特效采取分级的策略，等级越低，特效表现越简单，同时也可以从粒子数量、运算模块来进行精简。如果还是不能满足性能要求，也可以考虑改用帧动画来替代粒子特效。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>您的赞赏是我前进的动力</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="xujh 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>xujh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/" title="手游开发中渲染优化的三个要素">http://aiplay.studio/2020/05/21/2020-05-21-mobile-optimized-3factor/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/30/2020-04-30-talk-about-ecs/" rel="prev" title="聊聊ECS架构与实际应用">
+      <i class="fa fa-chevron-left"></i> 聊聊ECS架构与实际应用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/21/2020-06-21-something-about-texture/" rel="next" title="纹理那些事儿">
+      纹理那些事儿 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bandwidth"><span class="nav-number">1.</span> <span class="nav-text">Bandwidth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawcall"><span class="nav-number">2.</span> <span class="nav-text">Drawcall</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%90%88%E6%89%B9"><span class="nav-number">2.0.1.</span> <span class="nav-text">动态合批</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%90%88%E6%89%B9"><span class="nav-number">2.0.2.</span> <span class="nav-text">静态合批</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Shader-LOD"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">Shader LOD</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%81%AE%E6%8C%A1%E5%89%94%E9%99%A4"><span class="nav-number">2.0.3.</span> <span class="nav-text">遮挡剔除</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Overdraw"><span class="nav-number">3.</span> <span class="nav-text">Overdraw</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xujh"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xujh</p>
+  <div class="site-description" itemprop="description">爱生活 | 爱丸子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AIplay Studio</span>
+</div>
+  <div id="site-runtime">
+  <span class="post-meta-item-icon">
+    <i class="fa fa-clock-o"></i>
+  </span>
+  <span id="runtime"></span>
+</div>
+
+<script language="javascript">
+  function isPC() {
+    var userAgentInfo = navigator.userAgent;
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    for (var i = 0; i < agents.length; i++) {
+      if (userAgentInfo.indexOf(agents[i]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function siteTime(openOnPC, start) {
+    window.setTimeout("siteTime(openOnPC, start)", 1000);
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+      start = new Date("2014-11-23 09:00:00 +0800");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var diff = now - start;
+
+    var diffYears = Math.floor(diff / years);
+    var diffDays = Math.floor((diff / days) - diffYears * 365);
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+
+    if (openOnPC) {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + " years " + diffDays + " days " + diffHours + " hours " + diffMinutes + " mins " + diffSeconds + " secs";
+    } else {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + "y " + diffDays + "d " + diffHours + "h " + diffMinutes + "m " + diffSeconds + "s";
+    }
+  }
+
+  var showOnMobile = false;
+  var openOnPC = isPC();
+  var start = new Date();
+  siteTime(openOnPC, start);
+
+  if (!openOnPC && !showOnMobile) {
+    document.getElementById('site-runtime').style.display = 'none';
+  }
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="$${\mathcal L}{cyc}(G,F)&#x3D;{\mathbb E}{x \sim p_{data}(x)}[{|F(G(x))-x|}{1}]+{\mathbb E}{y \sim p_{data}(y)}[{|G(F(y))-y|}_{1}]$$ $$a &#x3D; b + c$$ 基础概念PBR（Physically Based Rendering) 定义  使用基于物理原理和微平面理论建模的着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="适合小白的PBR入门指南">
+<meta property="og:url" content="http://aiplay.studio/2020/07/06/2020-07-06-introduction-for-pbr/index.html">
+<meta property="og:site_name" content="爱丸游戏工作室">
+<meta property="og:description" content="$${\mathcal L}{cyc}(G,F)&#x3D;{\mathbb E}{x \sim p_{data}(x)}[{|F(G(x))-x|}{1}]+{\mathbb E}{y \sim p_{data}(y)}[{|G(F(y))-y|}_{1}]$$ $$a &#x3D; b + c$$ 基础概念PBR（Physically Based Rendering) 定义  使用基于物理原理和微平面理论建模的着">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2746">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2747">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2752">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2755">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2756">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2758">
+<meta property="og:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2759">
+<meta property="article:published_time" content="2020-07-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.229Z">
+<meta property="article:author" content="xujh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2746">
+
+<link rel="canonical" href="http://aiplay.studio/2020/07/06/2020-07-06-introduction-for-pbr/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>适合小白的PBR入门指南 | 爱丸游戏工作室</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">爱丸游戏工作室</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2020/07/06/2020-07-06-introduction-for-pbr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          适合小白的PBR入门指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-06T00:00:00+08:00">2020-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机图形学</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>$$<br>{\mathcal L}<em>{cyc}(G,F)={\mathbb E}</em>{x \sim p_{data}(x)}[{|F(G(x))-x|}<em>{1}]+{\mathbb E}</em>{y \sim p_{data}(y)}[{|G(F(y))-y|}_{1}]<br>$$</p>
+<p>$$<br>a = b + c<br>$$</p>
+<h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><p><strong>PBR（Physically Based Rendering) 定义</strong></p>
+<blockquote>
+<p>使用基于物理原理和微平面理论建模的着色、光照模型，以及使用从现实中测量的表面参数来准确表示真实世界材质的理念。</p>
+</blockquote>
+<p><strong>微平面（Microfacet）理论</strong></p>
+<blockquote>
+<p>任何物体表面，微观层面上都是由许多随机凹凸不平的微面元（光学光滑）构成，物体表面的粗糙度越高，微面元的排列就越混乱。</p>
+</blockquote>
+<span id="more"></span>
+
+<p><strong>能量守恒</strong></p>
+<blockquote>
+<p>出射光线的能量永远不能超过入射光线的能量（发光面除外）。</p>
+</blockquote>
+<p><strong>辐射通量（Radiant Flux）</strong></p>
+<blockquote>
+<p>每单位时间的辐射能量，单位符号是<em>W(瓦特)</em> 。这里可以理解为是一个光源所输出的能量，由于光的能量实际上是由不同波长的能量集合而成，且每种波长与一种特定的颜色相关，因此可以使用RGB编码来作为辐射通量表示的简化。</p>
+</blockquote>
+<p><strong>立体角（Solid Angle）</strong></p>
+<blockquote>
+<p>以观测点为球心，构造一个单位球面，任意物体投影到该单位球面上的投影面积，即为该物体相对于该观测点的立体角。因此，立体角是单位球面上的一块面积。</p>
+</blockquote>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2746" alt="47fd7fcba4edcf87378325be26536939.png"></p>
+<p><strong>辐射率（Radiance）</strong></p>
+<blockquote>
+<p>用来量化单一方向上发射来的光线的大小或强度，及每单位立体角、每单位投射表面的辐射通量，单位符号是 *W / sr * m^2(瓦特每球面度每平方米)*。</p>
+</blockquote>
+<p><strong>辐射强度（Radiant Intensity）</strong></p>
+<blockquote>
+<p>在单位球面上，一个光源向每单位立体角所投送的辐射通量。</p>
+</blockquote>
+<p><strong>辐照度（Irradiance）</strong></p>
+<blockquote>
+<p>入射表面的辐射通量, 及所有投射到点p上的光线的总和。</p>
+</blockquote>
+<h3 id="渲染方程"><a href="#渲染方程" class="headerlink" title="渲染方程"></a>渲染方程</h3><p><strong>渲染</strong>到底是什么？</p>
+<p>Jams Kajiya在1986年发表的《The Rendering Equation》论文中给出了渲染方程的表述形式，基于数学建模的角度描述了渲染到底是什么，具体公式如下：</p>
+<p>$$<br>L_o(v) = L_e(v) + \int_{\Omega}^{}f(\omega_i,v)L_i(\omega_i)(n\cdot\omega_i)d\omega_i<br>$$</p>
+<p>相信很多人可能会被这个繁杂的公式劝退，想要更好地去理解它，就需要我们根据之前所介绍的相关概念，对这个公式进行一步步的拆解，也就是化繁为简。</p>
+<p>公式中 <strong>L</strong> 表示辐射率，渲染方程所要表述的内容就是：从某一点到观察点（眼睛）方向上的出射辐射率等于该方向上的自发光辐射率，加上所有有效入射光到观察点的辐射率积分和。</p>
+<p>其中，去除自发光的部分，剩余的积分计算就是著名的 <strong>反射等式（Reflectance Equation）</strong>，它主要描述的是基于反射点构建的 <strong>半球领域（Hemisphere）</strong> 中所有入射光经反射到人眼的辐照度。</p>
+<p>此时，可以将立体角想象成无穷小，因此对应的辐射率也就表示光线穿过空间中某一点的辐射通量。这样也便于我们在着色器程序中使用辐射率来计算光线对片元的作用。</p>
+<p>图形学中，我们可以利用精确光源（点光源、平行光、聚光灯）来简化反射等式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L_o(v) = &#123;\pi&#125;f(l_c,v)c_&#123;light&#125;(n&#123;\cdot&#125;l_c)</span><br></pre></td></tr></table></figure>
+<p>当场景中存在多个精确光源，只需要对公式的计算结果进行简单的累加即可。</p>
+<p>继续拆解分析下精确光源下简化后的反射等式。</p>
+<p>首先是  <em>(n⋅l)</em> 部分。</p>
+<p>通常我们会利用入射光线方向与反射点所在平面的法线进行内积运算，以此来表示该点的反射光的强度。一般用辐照度来表示光的强度，也就是投射到某一区域的所有光线总和。</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2747" alt="740476d28a3d8904282a197ce6ceb8f7.png"></p>
+<p>如上图，假设光线之间平行且距离 <strong>d</strong> 保持不变，投射到反射平面上的间隔距离 <strong>L</strong> 可以根据光线方向与法线方向的夹角余弦来推出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L = \frac &#123;d&#125;&#123;cos\theta&#125;</span><br></pre></td></tr></table></figure>
+<p>由此可知，某个区域的光线越密集（辐照度越高），则L也就越小，因此不难推出，辐照度实际上是跟光线与法线的夹角余弦成正比的。而想要求出两个向量的夹角余弦，用对应的单位向量进行内积运算即可。</p>
+<p>下面说说这个 π 是怎么来的。</p>
+<p>设想一个最最简单的情况，入射光从四面八方射入，并保证亮度一致，这样我们就可以将常数提到积分外面，并且内积运算改用余弦函数表示，反射等式就成了下面这个样子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L_o(v) = f(\omega_i,v)L_i\int_&#123;\Omega&#125;^&#123;&#125;cos&#123;\theta&#125;d\omega_i</span><br></pre></td></tr></table></figure>
+
+<p>公式中的积分部分，我们称作<strong>立体角积分</strong>。可以把立体角想象成无穷小，与球体相交的截面也就是球体表面的微元，积分运算实际上也就是求球体的表面积，因此上述积分可以分解成球体表面积分和cos</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\int_&#123;-\pi&#125;^&#123;\pi&#125;\int_&#123;0&#125;^&#123;\frac &#123;\pi&#125;&#123;2&#125;&#125;sin&#123;\theta&#125;cos&#123;\theta&#125;&#123;d\theta&#125;&#123;d\phi&#125;</span><br></pre></td></tr></table></figure>
+<p>根据余弦定理，可以将里面的积分改写成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\int_&#123;0&#125;^&#123;\frac &#123;\pi&#125;&#123;2&#125;&#125;sin&#123;\theta&#125;cos&#123;\theta&#125;d\theta = \frac &#123;1&#125;&#123;2&#125;[sin^2(\frac &#123;\pi&#125;&#123;2&#125;) - sin^2(0)] = \frac &#123;1&#125;&#123;2&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再放回外层的积分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\int_&#123;\Omega&#125;^&#123;&#125;cos\theta&#123;d\omega_i&#125; = \int_&#123;-\pi&#125;^&#123;\pi&#125;\frac &#123;1&#125;&#123;2&#125;&#123;d\phi&#125; = \pi</span><br></pre></td></tr></table></figure>
+<p>讲到这里，就只剩下f(wi, v)部分了。这个函数实际上就是之前渲染方程的一个简化计算，描述了已知入射光，会有多少百分比的光反射到观察方向上。在图形学中，这个函数有一个专门的名字：双向反射分布函数，即BRDF。</p>
+<h3 id="BRDF"><a href="#BRDF" class="headerlink" title="BRDF"></a>BRDF</h3><p>BRDF英文全称为 Bidirectional Reflectance Distribution Function，中文译作双向反射分布函数。它在渲染方程中的作用就是来确定所有出射方向上的反射和散射光线的相对分布情况。因此，BRDF又可以拆分成两个部分：<strong>高光反射项</strong>（对应表面反射）和<strong>漫反射项</strong>（对应次表面散射），我们将这种模型称之为 <strong>Cook-Torrance BRDF模型</strong>。</p>
+<h4 id="漫反射项"><a href="#漫反射项" class="headerlink" title="漫反射项"></a>漫反射项</h4><p>最简单、应用最广泛的漫反射BRDF就是 Lambert模型了，它的公式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f_&#123;Lambert&#125;(l, v) = \frac &#123;Color_&#123;diffucse&#125;&#125;&#123;\pi&#125;</span><br></pre></td></tr></table></figure>
+<p>这里为什么又要除以一个 π ？</p>
+<p>之前我们已经推导出了出射辐射率的公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L_o = &#123;\pi&#125;f(\omega_i,v)L_i = \pi * BRDF * L_i</span><br></pre></td></tr></table></figure>
+
+<p>为了使着色是基于物理的，就需要BRDF去遵守能量守恒定律，即出射光线的能量要小于等于入射光线的能量。假设所有射向受光面一点的入射辐照率都为Li，那么实际的辐射通量应该等于辐射率乘以半球的表面积。由于能量守恒，入射光能量等于出射光能量。于是我们不难得出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">F_o = 2\pi&#123;L_o&#125; = 2\pi*\pi*BRDF*L_i = F_i = 2\pi&#123;L_i&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里只有让BRDF等于1/π才能保证等式相等，这也是为什么Lambert漫反射模型会去除以一个 π 的原因了。</p>
+<p>但有些时候，Lambert模型还是存在一些局限性，为了表现出更加真实模拟次表面散射的效果，就需要用到更复杂的漫反射项，这方面最著名并广泛使用的就是大名鼎鼎的<strong>迪士尼原则的BRDF</strong>，它的漫反射项就复杂多了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f_&#123;diff&#125;(l, v) = \frac &#123;baseColor&#125;&#123;\pi&#125;(1 + (F_&#123;D90&#125; - 1)(1 - n&#123;\cdot&#125;l)^5)(1 + (F_&#123;D90&#125; - 1)(1 - n&#123;\cdot&#125;v)^5))</span><br></pre></td></tr></table></figure>
+<p>其中，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">F_&#123;D90&#125; = 0.5 + 2roughness(h&#123;\cdot&#125;l)^2</span><br></pre></td></tr></table></figure>
+<p>Disney使用了Schlick菲涅耳近似等式来模拟在掠射角的反射变化，同时使用表面粗糙度来进一步修改它，既保证光滑材质可以在掠射角具有更加明显的阴影边，又使得粗糙材质在掠射角具有亮边。</p>
+<h4 id="高光反射项"><a href="#高光反射项" class="headerlink" title="高光反射项"></a>高光反射项</h4><p>如果只考虑漫反射效果，渲染出来的画面并不够真实。所以，BRDF中的高光反射项也尤为重要，并且也更加复杂。</p>
+<p>这里需要先回顾一下微平面理论：物体的表面由许多微面元构成，每个微面元被认为是光学平滑的，具有完美的高光反射。由于入射光线或出射光线都存在可能被其他某个微面元挡住，所以不会添加到高光反射项的计算中。如下图，左侧某些入射光被凸起的微面元遮挡，黑色虚线投射的部分会形成阴影；右侧出射时被遮挡的部分，则不会看见对应的高光反射。</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2752" alt="e9fef40c610d12217129af0369f52a60.png"></p>
+<p>基于这些假设，我们可以使用下面的通用形式来表示BRDF的高光反射项：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f_&#123;spec&#125; = \frac &#123;FGD&#125;&#123;4(n&#123;\cdot&#125;l)(n&#123;\cdot&#125;v)&#125;</span><br></pre></td></tr></table></figure>
+<p>分母部分是用于校正从微面元的局部空间到宏观整体表面的局部空间变换的校正因子。</p>
+<p>分子项里的FGD分别表示：菲涅耳方程（<strong>F</strong>resnel Equation）、几何函数（<strong>G</strong>eometry Function）和法线分布函数（Normal <strong>D</strong>istribution Function）。</p>
+<h5 id="菲涅耳方程"><a href="#菲涅耳方程" class="headerlink" title="菲涅耳方程"></a>菲涅耳方程</h5><p>该方程描述了光学表面反射光线对比折射光线所占的比率，当光照方向和观察方向夹角逐渐增大时高光反射强度对应增大。完整的菲涅耳方程十分复杂，为了给美术人员提供更加直观、便利的调节参数，一般会选择使用 <strong>Fresnel-Schlick 近似等式</strong>来求得近似解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">F_&#123;Schlick&#125;(l, h) = Color_&#123;spec&#125; + (1 - Color_&#123;spec&#125;)(1 - (l&#123;\cdot&#125;n))^5</span><br></pre></td></tr></table></figure>
+
+<p>一般来说，金属材质的高光反射颜色（0.7<del>1.0）要高于非金属材质的高光反射颜色（0</del>0.45）。</p>
+<h5 id="法线分布函数"><a href="#法线分布函数" class="headerlink" title="法线分布函数"></a>法线分布函数</h5><p>假设每个微面元的法线为<strong>m</strong>，向量<strong>h</strong>等于入射光方向与平面法线的一半，法线分布函数则表示了当前表面有多少比例的微面元满足 <strong>m</strong>=<strong>h</strong>，它是一种近似的比率，必须是非负的标量。最终结果跟表面的粗糙度有一定的关系，当粗糙度下降时，理论上应该有更多的微面元满足<strong>m</strong>=<strong>n</strong>。</p>
+<p>比较常见的法线分布函数有GGX，也叫Trowbridge-Reitz NDF，它的公式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D_&#123;GGX&#125;(h) = \frac&#123;&#123;\alpha&#125;^2&#125;&#123;\pi((&#123;\alpha&#125;^2 - 1)(n&#123;\cdot&#125;h)^2 + 1)^2&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里<strong>h</strong>表示用来与平面上微平面做比较用的中间向量，而<strong>a</strong>表示表面粗糙度。</p>
+<p>当粗糙度很低（也就是说表面很光滑）的时候，与中间向量取向一致的微平面会高度集中在一个很小的半径范围内。由于这种集中性，NDF最终会生成一个非常明亮的斑点。但是当表面比较粗糙的时候，微平面的取向方向会更加的随机。你将会发现与h向量取向一致的微平面分布在一个大得多的半径范围内，但是同时较低的集中性也会让我们的最终效果显得更加灰暗。</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2755" alt="cca46696de64652c21eb88b921e4a811.png"></p>
+<p>而在Disney BRDF中，选择了一种更加广义的法线分布模型：<strong>Generalized-Trowbridge-Reitz(GTR)分布</strong>。GTR分布与GGX分布十分类似，不同的是它的分母指数是一个可调参数，并且<strong>a</strong>表示的是表面粗糙度的平方。</p>
+<h5 id="几何函数"><a href="#几何函数" class="headerlink" title="几何函数"></a>几何函数</h5><p>根据微平面原理我们知道，光线在传播的过程中，很可能会被物体的一些微面元挡住而无法显示出高光颜色。这个几何函数，就是为了近似计算出微面元之间相互遮蔽的概率。</p>
+<p>同样的，会使用粗糙度作为几何函数的输入参数，因为粗糙度较高的表面其微面元间相互遮蔽的概率也更高。学术上有很多几何函数的分析模型，这里我们只介绍其中一种，即<strong>Schlick-GGX</strong>，公式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">G_&#123;SchlickGGX&#125;(n, v, k) = \frac&#123;n&#123;\cdot&#125;v&#125;&#123;(n&#123;\cdot&#125;v)(1 - k) + k&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的k是 <em><strong>a</strong></em> 基于几何函数是针对直接光照还是针对IBL光照的重映射，同时还要注意粗糙度转化为 <em><strong>a</strong></em> 的方式。</p>
+<p>为了有效的估算，需要兼顾考虑观察方向和光线入射方向的遮蔽情况。利用<strong>Smith Method</strong>来把两者相乘：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">G_&#123;smith&#125; = G_&#123;SchlickGGX&#125;(n, v, k)G_&#123;SchlickGGX&#125;(n, l, k)</span><br></pre></td></tr></table></figure>
+
+<p>介绍到这里，我们发现BRDF里的高光反射项，<strong>FDG</strong>每个部分都有不同形式的模型，这也造就了各式各样的BRDF。举例来说，UE4引擎中使用的<strong>FDG</strong>函数就分别是：Fresnel-Schlick近似、Trowbridge-Reitz GGX、Smith’s Schlick-GGX。</p>
+<h3 id="IBL"><a href="#IBL" class="headerlink" title="IBL"></a>IBL</h3><p>如果只考虑直接光照，我们渲染出来的物体还是没办法看上去那么“物理“，这就需要考虑上环境光。一个通用的解决方案就是IBL，全称 <strong>Image Based Lighting</strong>，基于图像的光照。它的做法就是使用一张通过场景生成的立方体贴图，贴图纹素中存储着光照信息，片元着色阶段就可以根据片元法线方向对环境光立方体贴图进行采样，并将结果添加进光照计算中。</p>
+<p>这里我们再来回顾一下之前推导的反射方程（拆分为漫反射项和高光反射项）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L_o = \int_&#123;\Omega&#125;^&#123;&#125;\frac&#123;C_&#123;diffuce&#125;&#125;&#123;\pi&#125;L_i(p, \omega_i)n&#123;\cdot&#125;\omega_id\omega_i + \int_&#123;\Omega&#125;^&#123;&#125; \frac&#123;FDG&#125;&#123;4(\omega_o&#123;\cdot&#125;n)(\omega_i&#123;\cdot&#125;n)&#125;L_i(p, \omega_i)n&#123;\cdot&#125;\omega_id\omega_i</span><br></pre></td></tr></table></figure>
+
+<p>漫反射部分的结果通常是通过卷积计算出来的，即对半球领域上的大量方向进行离散采样，并将辐照度取平均值，来计算每个输出采样方向的总和。因此，对立方体贴图中的每个采样方向做漫反射计算，都需要考虑半球领域上的所有其他采样方向。这样的立方体贴图也被称为<strong>辐照度图</strong>。</p>
+<p>由于漫反射计算需要依赖于光线受照位置 <strong>p</strong>，如果只考虑它位于中心位置的情况，那么所有漫反射间接光只能都来自同一张环境光立方体贴图，在一些狭小的空间下会破坏现实感。一般游戏引擎中，会采用<strong>反射探针（Reflection Profobes）</strong> 机制来解决这个问题。每个反射探针单独预先计算好周围环境的辐照度图，位置<strong>p</strong>处的辐照度是取离着最近的几个反射探针之间的辐照度插值。</p>
+<p>下图就是一个环境立方体贴图及其生成的辐照度图：</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2756" alt="f79e668494d54e25edb9ea698f5f9d5e.png"></p>
+<p>镜面反射部分的IBL就更加复杂一些，同时受到入射光方向和视角方向的影响。如果试图解出所有入射光方向和视角方向的积分，实时计算代价极为高昂。于是，有人提出了一种折中的解决方案：<strong>分割求和近似法（Spit Sum Approximation）</strong>。</p>
+<p>分割求和近似法将镜面反射积分拆解成两个独立的部分。</p>
+<p>第一部分被称为<strong>预滤波环境贴图</strong>，类似与辐照度图，但考虑了粗糙度的因素。随着粗糙度的增加，反射就更模糊，并将不同粗糙度下的结果存储在预滤波贴图的Mipmap中。如下图所示：</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2758" alt="7265d07e7c178c02815ee4ed1f037058.png"></p>
+<p>第二部分是<strong>环境BRDF</strong>，假设每个方向的入射辐射率都等于1，在给定粗糙度、光线与法线内积（夹角）的情况下，预计算BRDF的结果，并将其存储在一张2D<strong>查找纹理（LUT）</strong>上，也称为<strong>BRDF积分贴图</strong>。</p>
+<p><img src="evernotecid://6D7754FF-5764-46D0-96E1-1661E5593622/appyinxiangcom/4970874/ENResource/p2759" alt="18cca815a1854c807625e5db5020c2c9.png"></p>
+<p>参考上图，输入的uv坐标分别对应<strong>入射光线与法线夹角的余弦</strong>和<strong>粗糙度</strong>，对应输出的是环境BRDF镜面反射的强度，R通道存放着菲涅耳缩放系数，G通道存放着偏差值。</p>
+<hr>
+<h4 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h4><p><a target="_blank" rel="noopener" href="http://candycat1992.github.io/unity_shaders_book/unity_shaders_book_chapter_18.pdf">Unity入门精要 第18章 基于物理的渲染</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/21489591">如何看懂这些该死的图形学公式</a><br><a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/07%20PBR/01%20Theory/">LearnOpenGL PBR理论</a><br><a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/07%20PBR/03%20IBL/01%20Diffuse%20irradiance/">LearnOpenGL 漫反射辐照度</a><br><a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/07%20PBR/03%20IBL/02%20Specular%20IBL/">LearnOpenGL 镜面反射 IBL</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/53086060">基于物理的渲染白皮书（一）开篇</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>您的赞赏是我前进的动力</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="xujh 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>xujh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://aiplay.studio/2020/07/06/2020-07-06-introduction-for-pbr/" title="适合小白的PBR入门指南">http://aiplay.studio/2020/07/06/2020-07-06-introduction-for-pbr/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/21/2020-06-21-something-about-texture/" rel="prev" title="纹理那些事儿">
+      <i class="fa fa-chevron-left"></i> 纹理那些事儿
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/05/07/2021-05-07-dream-reality-gameproducer/" rel="next" title="爱，死亡，游戏制作人">
+      爱，死亡，游戏制作人 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%96%B9%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">渲染方程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BRDF"><span class="nav-number">3.</span> <span class="nav-text">BRDF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BC%AB%E5%8F%8D%E5%B0%84%E9%A1%B9"><span class="nav-number">3.1.</span> <span class="nav-text">漫反射项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E5%85%89%E5%8F%8D%E5%B0%84%E9%A1%B9"><span class="nav-number">3.2.</span> <span class="nav-text">高光反射项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8F%B2%E6%B6%85%E8%80%B3%E6%96%B9%E7%A8%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">菲涅耳方程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%95%E7%BA%BF%E5%88%86%E5%B8%83%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.2.</span> <span class="nav-text">法线分布函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.3.</span> <span class="nav-text">几何函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IBL"><span class="nav-number">4.</span> <span class="nav-text">IBL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E5%BC%95%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">参考引用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xujh"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xujh</p>
+  <div class="site-description" itemprop="description">爱生活 | 爱丸子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AIplay Studio</span>
+</div>
+  <div id="site-runtime">
+  <span class="post-meta-item-icon">
+    <i class="fa fa-clock-o"></i>
+  </span>
+  <span id="runtime"></span>
+</div>
+
+<script language="javascript">
+  function isPC() {
+    var userAgentInfo = navigator.userAgent;
+    var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    for (var i = 0; i < agents.length; i++) {
+      if (userAgentInfo.indexOf(agents[i]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function siteTime(openOnPC, start) {
+    window.setTimeout("siteTime(openOnPC, start)", 1000);
+    var seconds = 1000;
+    var minutes = seconds * 60;
+    var hours = minutes * 60;
+    var days = hours * 24;
+    var years = days * 365;
+      start = new Date("2014-11-23 09:00:00 +0800");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var diff = now - start;
+
+    var diffYears = Math.floor(diff / years);
+    var diffDays = Math.floor((diff / days) - diffYears * 365);
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+
+    if (openOnPC) {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + " years " + diffDays + " days " + diffHours + " hours " + diffMinutes + " mins " + diffSeconds + " secs";
+    } else {
+      document.getElementById("runtime").innerHTML = "Running: " + diffYears + "y " + diffDays + "d " + diffHours + "h " + diffMinutes + "m " + diffSeconds + "s";
+    }
+  }
+
+  var showOnMobile = false;
+  var openOnPC = isPC();
+  var start = new Date();
+  siteTime(openOnPC, start);
+
+  if (!openOnPC && !showOnMobile) {
+    document.getElementById('site-runtime').style.display = 'none';
+  }
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
