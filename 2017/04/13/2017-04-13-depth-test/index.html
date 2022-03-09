@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在Op">
+  <meta name="description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念 在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在O">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度测试">
 <meta property="og:url" content="http://aiplay.studio/2017/04/13/2017-04-13-depth-test/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在Op">
+<meta property="og:description" content="本文主要参考来自《Learn OpenGL CN 深度测试》这篇教程。 基本概念 在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。 下面说说__深度测试__，它发生在O">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-04-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-14T10:29:52.225Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.220Z">
 <meta property="article:author" content="xujh">
 <meta property="article:tag" content="OpenGL">
 <meta name="twitter:card" content="summary">
@@ -247,72 +247,75 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><em>本文主要参考来自<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/01%20Depth%20testing/">《Learn OpenGL CN 深度测试》</a>这篇教程。</em></p>
-<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。</p>
+        <p><em>本文主要参考来自<a
+target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/01%20Depth%20testing/">《Learn
+OpenGL CN 深度测试》</a>这篇教程。</em></p>
+<h3 id="基本概念">基本概念</h3>
+<p>在OpenGL中，__深度缓冲__的作用主要是为了防止3D场景中那些被遮挡的面渲染到前面（脱离了现实效果），它像颜色缓冲一样，存储着每个fragment的信息，通常和颜色缓冲区有相同的宽度和高度。深度缓冲区储存着的深度值可以表示为16、24或32位浮点数，多数情况下默认为24位。</p>
 <p>下面说说__深度测试__，它发生在OpenGL管线中的fragment着色器运行之后的测试阶段，准确地说是在模板测试之后。深度测试默认是关闭着的，我们可以像这样来打开深度测试：</p>
-<pre><code>glEnable(GL_DEPTH_TEST);
-</code></pre>
+<pre><code>glEnable(GL_DEPTH_TEST);</code></pre>
 <p>开启深度测试就意味着OpenGL会去对深度缓冲中的深度值进行测试，而所谓的深度测试，实际上就是将fragment的实际z值与深度缓冲中存储着的对应z值通过__某种规则__进行比较。如果测试通过，会自动在深度缓冲区存储fragment的z值，测试失败则相应地丢弃该fragment。</p>
 <p><strong>【特别注意】在每次渲染之前，应使用glClear(GL_DEPTH_BUFFER_BIT)来清除深度缓冲区，否则仍会保留上一次进行深度测试时所写的深度值。</strong></p>
-<p>当然还存在这种情况，我们只想进行深度测试去丢弃那些未通过测试的fragment，但并不希望去更新深度缓冲区。此时，可以通过将其深度掩码设置为 <strong>GL_FALSE</strong> 来禁用深度缓冲区的写入操作。</p>
-<pre><code>glDepthMask(GL_FALSE);
-</code></pre>
+<p>当然还存在这种情况，我们只想进行深度测试去丢弃那些未通过测试的fragment，但并不希望去更新深度缓冲区。此时，可以通过将其深度掩码设置为
+<strong>GL_FALSE</strong> 来禁用深度缓冲区的写入操作。</p>
+<pre><code>glDepthMask(GL_FALSE);</code></pre>
 <span id="more"></span>
-
-<h3 id="深度测试函数"><a href="#深度测试函数" class="headerlink" title="深度测试函数"></a>深度测试函数</h3><p>之前说深度测试会按照某种规则进行比较，实际上OpenGL为我们提供了接口来设置比较运算符（亦称depth function）。调用方式如下：</p>
-<pre><code>glDepthFunc(GL_LESS);
-</code></pre>
+<h3 id="深度测试函数">深度测试函数</h3>
+<p>之前说深度测试会按照某种规则进行比较，实际上OpenGL为我们提供了接口来设置比较运算符（亦称depth
+function）。调用方式如下：</p>
+<pre><code>glDepthFunc(GL_LESS);</code></pre>
 <p>其中参数选项不仅仅包含GL_LESS，还有其他的选项配置，大致含义如下：</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>运算符</th>
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr class="odd">
 <td>GL_ALWAYS</td>
 <td>总是通过</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_NEVER</td>
 <td>永不通过</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>GL_LESS</td>
 <td>fragment深度值小于缓冲区深度值时通过</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_EQUAL</td>
 <td>fragment深度值等于缓冲区深度值时通过</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>GL_LEQUAL</td>
 <td>fragment深度值小于等于缓冲区深度值时通过</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_GREATER</td>
 <td>fragment深度值大于缓冲区深度值时通过</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>GL_NOTEQUAL</td>
 <td>fragment深度值不等于缓冲区深度值时通过</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_GEQUAL</td>
 <td>fragment深度值大于等于缓冲区深度值时通过</td>
 </tr>
-</tbody></table>
-<h3 id="深度值精度"><a href="#深度值精度" class="headerlink" title="深度值精度"></a>深度值精度</h3><p>存储在深度缓冲区中的深度值介于__0.0__和__1.0__之间，而与之比较的是视图空间中可见对象的z值，该z值介于投影平头截体的近面与远面之间。因此需要一些方法将视图空间z值转换到[0,1]的范围内。通常有__线性__与__非线性__两种方式，但实际上我们只会采用非线性的方式。</p>
+</tbody>
+</table>
+<h3 id="深度值精度">深度值精度</h3>
+<p>存储在深度缓冲区中的深度值介于__0.0__和__1.0__之间，而与之比较的是视图空间中可见对象的z值，该z值介于投影平头截体的近面与远面之间。因此需要一些方法将视图空间z值转换到[0,1]的范围内。通常有__线性__与__非线性__两种方式，但实际上我们只会采用非线性的方式。</p>
 <p>通常会让非线性深度方程和1/z成正比，这样做的目的是令那些可见对象的z值越近时精度越高，反之越远则精度越低。因此，在深度缓冲区中深度值为0.5并不意味着该对象的z值是在投影平头截体的中间位置。</p>
-<h3 id="深度冲突"><a href="#深度冲突" class="headerlink" title="深度冲突"></a>深度冲突</h3><p>__深度冲突__是指两个图元紧密地相互平行，而深度缓冲区的精度不足以区分判断哪一个更靠前的时候，这两个形状会出现相互交替的怪异现象。深度冲突问题目前还无法完全避免，但可以利用如下方式尽量规避：</p>
-<ol>
-<li><p>使用glPolygonOffset函数，将其分开渲染，先渲染一个，再通过glPolygonOffset函数来设置偏移量，接着渲染第二个。这用解决方案在效率上会受到一些影响。</p>
-</li>
-<li><p>尽可能地把视椎体近面设置得远一些。由于越靠近视椎体近面的位置深度值的精度越高，所以我们将其移远后，可以有效提高视椎体内部的深度值精度。但需根据实际情况进行调整，因为如果近面移动的太远会导致近处的物体被剪裁掉。</p>
-</li>
-<li><p>提高深度缓冲区的精度，多数的深度缓冲区的精度都是24位，但是一些显卡支持32位的深度值，这会让深度缓冲区的精度大幅度提高，但也会牺牲一些性能。</p>
-</li>
+<h3 id="深度冲突">深度冲突</h3>
+<p>__深度冲突__是指两个图元紧密地相互平行，而深度缓冲区的精度不足以区分判断哪一个更靠前的时候，这两个形状会出现相互交替的怪异现象。深度冲突问题目前还无法完全避免，但可以利用如下方式尽量规避：</p>
+<ol type="1">
+<li><p>使用glPolygonOffset函数，将其分开渲染，先渲染一个，再通过glPolygonOffset函数来设置偏移量，接着渲染第二个。这用解决方案在效率上会受到一些影响。</p></li>
+<li><p>尽可能地把视椎体近面设置得远一些。由于越靠近视椎体近面的位置深度值的精度越高，所以我们将其移远后，可以有效提高视椎体内部的深度值精度。但需根据实际情况进行调整，因为如果近面移动的太远会导致近处的物体被剪裁掉。</p></li>
+<li><p>提高深度缓冲区的精度，多数的深度缓冲区的精度都是24位，但是一些显卡支持32位的深度值，这会让深度缓冲区的精度大幅度提高，但也会牺牲一些性能。</p></li>
 </ol>
 
     </div>
@@ -464,7 +467,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -502,7 +505,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

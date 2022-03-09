@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="基本概述在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括: string 、 table 、 userdata 、 function 、 thread 等。 Lua所采用的gc算法叫做 标记&amp;回收算法 。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，被">
+  <meta name="description" content="基本概述 在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括: string 、 table 、 userdata 、 function 、 thread 等。 Lua所采用的gc算法叫做 标记&amp;回收算法 。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Lua的gc机制">
 <meta property="og:url" content="http://aiplay.studio/2016/03/02/2016-03-02-lua-gc/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="基本概述在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括: string 、 table 、 userdata 、 function 、 thread 等。 Lua所采用的gc算法叫做 标记&amp;回收算法 。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，被">
+<meta property="og:description" content="基本概述 在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括: string 、 table 、 userdata 、 function 、 thread 等。 Lua所采用的gc算法叫做 标记&amp;回收算法 。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-03-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-14T10:29:52.228Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.220Z">
 <meta property="article:author" content="xujh">
 <meta property="article:tag" content="Lua">
 <meta name="twitter:card" content="summary">
@@ -247,37 +247,68 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="基本概述"><a href="#基本概述" class="headerlink" title="基本概述"></a>基本概述</h3><p>在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括: <em>string</em> 、 <em>table</em> 、 <em>userdata</em> 、 <em>function</em> 、 <em>thread</em> 等。</p>
-<p>Lua所采用的gc算法叫做 <strong>标记&amp;回收算法</strong> 。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，被扫描到并标记的对象认为可达的，在gc中并不会回收，反之则会在gc中被回收释放掉。</p>
-<p>早期的Lua采用的是双色标记回收算法，即系统中的对象只支持两种状态：<em>black</em> 和 <em>white</em> 。每个新创建的对象的颜色为白色，若其他地方存在该对象的引用，则将其标记为黑色，在进入gc的回收阶段时，会将白色的对象回收释放掉。这个算法存在一个比较大的缺陷，整个gc过程必须保证是原子性的不能被打断。假设在遍历对象链表标记对象颜色的时候中断，而此时新增了一个对象，这个对象的颜色属性很难确定。如果该新增对象标记为白色，而gc到了回收阶段，这个对象就会在没有遍历其关联对象的情况下被回收；如果标记为黑色，那么进入回收阶段后，该对象在没有被扫描的情况下就认为是不必回收的。因此，标记阶段和回收阶段必须合在一起完成，不能被打断。如此一来，gc的代价也会显得异常昂贵。</p>
-<p>在之后的Lua 5.1版本中改进了这个算法，增加了新的颜色状态 ： <em>gray</em> 。</p>
+        <h3 id="基本概述">基本概述</h3>
+<p>在Lua中会自动帮你管理内存，通过gc(垃圾收集器)来收集所有不可能再访问到的死对象，因此开发者们不必去操心该如何释放对象所占用的内存。而Lua中目前适用于自动垃圾回收的类型包括:
+<em>string</em> 、 <em>table</em> 、 <em>userdata</em> 、
+<em>function</em> 、 <em>thread</em> 等。</p>
+<p>Lua所采用的gc算法叫做 <strong>标记&amp;回收算法</strong>
+。其原理是在每一次gc时会首先扫描并标记系统中的所有对象，被扫描到并标记的对象认为可达的，在gc中并不会回收，反之则会在gc中被回收释放掉。</p>
+<p>早期的Lua采用的是双色标记回收算法，即系统中的对象只支持两种状态：<em>black</em>
+和 <em>white</em>
+。每个新创建的对象的颜色为白色，若其他地方存在该对象的引用，则将其标记为黑色，在进入gc的回收阶段时，会将白色的对象回收释放掉。这个算法存在一个比较大的缺陷，整个gc过程必须保证是原子性的不能被打断。假设在遍历对象链表标记对象颜色的时候中断，而此时新增了一个对象，这个对象的颜色属性很难确定。如果该新增对象标记为白色，而gc到了回收阶段，这个对象就会在没有遍历其关联对象的情况下被回收；如果标记为黑色，那么进入回收阶段后，该对象在没有被扫描的情况下就认为是不必回收的。因此，标记阶段和回收阶段必须合在一起完成，不能被打断。如此一来，gc的代价也会显得异常昂贵。</p>
+<p>在之后的Lua 5.1版本中改进了这个算法，增加了新的颜色状态 ：
+<em>gray</em> 。</p>
 <p>相比之前，每个对象多了一种颜色状态，从而保证了gc过程可以是增量的，能够被中断后继续进行。这三种颜色分类如下：</p>
 <ul>
-<li><strong>white</strong> : 当前对象还没有被gc访问标记过，新增对象的初始状态，如果一个对象在标记过程后仍为白色，则表示该对象没有被系统中的其他对象所引用，可以回收；</li>
-<li><strong>gray</strong>  : 表示该对象已经被gc访问过，但是该对象引用的其他对象还没有被访问到；</li>
-<li><strong>black</strong> : 表示该对象已经被gc访问过，并且该对象引用的其他对象也已经被访问过。</li>
+<li><strong>white</strong> :
+当前对象还没有被gc访问标记过，新增对象的初始状态，如果一个对象在标记过程后仍为白色，则表示该对象没有被系统中的其他对象所引用，可以回收；</li>
+<li><strong>gray</strong> :
+表示该对象已经被gc访问过，但是该对象引用的其他对象还没有被访问到；</li>
+<li><strong>black</strong> :
+表示该对象已经被gc访问过，并且该对象引用的其他对象也已经被访问过。</li>
 </ul>
-<p>如此一来，只要存放灰色对象的链表不为空，标记过程就会继续下去，直到gray链表清空，表示所有对象都被扫描过了。但即使新增了灰色中间状态，仍然存在一个问题。假如在标记过程结束后gc中断，新建了一个对象，此时它的状态应该是白色，但紧接着的回收阶段，会将这个没有被扫描标记的对象认为是没有被引用的对象而回收释放掉。为解决这个问题，Lua又细化出了“双白色”的概念，即将 <em>white</em> 细分为 currentwhite 和 otherwhite 。每次gc会使用其中的一种 <em>white</em> ，而下次gc则使用另外一个，交替递推。这样在回收阶段，会判断相应对象的 <em>white</em> 是否和当前gc的 <em>white</em> 是否相同，如果相同则会让这个对象等到下次gc中扫描回收，不同则将其回收。</p>
+<p>如此一来，只要存放灰色对象的链表不为空，标记过程就会继续下去，直到gray链表清空，表示所有对象都被扫描过了。但即使新增了灰色中间状态，仍然存在一个问题。假如在标记过程结束后gc中断，新建了一个对象，此时它的状态应该是白色，但紧接着的回收阶段，会将这个没有被扫描标记的对象认为是没有被引用的对象而回收释放掉。为解决这个问题，Lua又细化出了“双白色”的概念，即将
+<em>white</em> 细分为 currentwhite 和 otherwhite
+。每次gc会使用其中的一种 <em>white</em>
+，而下次gc则使用另外一个，交替递推。这样在回收阶段，会判断相应对象的
+<em>white</em> 是否和当前gc的 <em>white</em>
+是否相同，如果相同则会让这个对象等到下次gc中扫描回收，不同则将其回收。</p>
 <span id="more"></span>
-
-<h3 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h3><p>接下来结合Lua 5.3.2的源代码，进行gc流程的相关分析，其中gc的入口函数如下：</p>
+<h3 id="流程分析">流程分析</h3>
+<p>接下来结合Lua
+5.3.2的源代码，进行gc流程的相关分析，其中gc的入口函数如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">luaC_fullgc</span> <span class="params">(lua_State *L, <span class="keyword">int</span> isemergency)</span> </span>&#123;</span><br><span class="line">  global_State *g = <span class="built_in">G</span>(L);</span><br><span class="line">  <span class="built_in">lua_assert</span>(g-&gt;gckind == KGC_NORMAL);</span><br><span class="line">  <span class="keyword">if</span> (isemergency) g-&gt;gckind = KGC_EMERGENCY;  <span class="comment">/* set flag */</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">keepinvariant</span>(g)) &#123;  <span class="comment">/* black objects? */</span></span><br><span class="line">    <span class="built_in">entersweep</span>(L); <span class="comment">/* sweep everything to turn them back to white */</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/* finish any pending sweep phase to start a new cycle */</span></span><br><span class="line">  <span class="built_in">luaC_runtilstate</span>(L, <span class="built_in">bitmask</span>(GCSpause));</span><br><span class="line">  <span class="built_in">luaC_runtilstate</span>(L, ~<span class="built_in">bitmask</span>(GCSpause));  <span class="comment">/* start new collection */</span></span><br><span class="line">  <span class="built_in">luaC_runtilstate</span>(L, <span class="built_in">bitmask</span>(GCScallfin));  <span class="comment">/* run up to finalizers */</span></span><br><span class="line">  <span class="comment">/* estimate must be correct after a full GC cycle */</span></span><br><span class="line">  <span class="built_in">lua_assert</span>(g-&gt;GCestimate == <span class="built_in">gettotalbytes</span>(g));</span><br><span class="line">  <span class="built_in">luaC_runtilstate</span>(L, <span class="built_in">bitmask</span>(GCSpause));  <span class="comment">/* finish collection */</span></span><br><span class="line">  g-&gt;gckind = KGC_NORMAL;</span><br><span class="line">  <span class="built_in">setpause</span>(g);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结合代码和函数注释，我们不难发现，该函数执行了一套完整的gc周期。其中gc包括两种种类，KGC_NORMAL和KGC_ENMERGENCY。在根据参数 <em>isenergency</em> 设置好gc状态之后，会调用 <em>keepinvariant</em> 来判断当前的gc阶段状态，如果仍处于标记阶段，则调用 <em>entersweep(L)</em> 进入扫描初级阶段(GCSswpallgc)，调用 <em>sweeptolive(L, &amp;g-&gt;allgc, &amp;n)</em> 并将其返回值赋给全局状态机的 <em>sweepgc</em> 字段，表示当前扫描链表的位置。</p>
-<p>接下来会连续调用四遍 <em>luaC_runtilstate()</em> 函数，该函数会根据你传入的状态标识位与当前全局状态机的gcstate进行按位与运算，不同则会调用 <em>singlestep(L)</em> 函数。该函数里是一个大的switch语句，根据gcstate进行划分，我们可以很清晰地看到gc过程的8个阶段。下面我们来分别介绍一下这些阶段状态的含义：</p>
+<p>结合代码和函数注释，我们不难发现，该函数执行了一套完整的gc周期。其中gc包括两种种类，KGC_NORMAL和KGC_ENMERGENCY。在根据参数
+<em>isenergency</em> 设置好gc状态之后，会调用 <em>keepinvariant</em>
+来判断当前的gc阶段状态，如果仍处于标记阶段，则调用
+<em>entersweep(L)</em> 进入扫描初级阶段(GCSswpallgc)，调用
+<em>sweeptolive(L, &amp;g-&gt;allgc, &amp;n)</em>
+并将其返回值赋给全局状态机的 <em>sweepgc</em>
+字段，表示当前扫描链表的位置。</p>
+<p>接下来会连续调用四遍 <em>luaC_runtilstate()</em>
+函数，该函数会根据你传入的状态标识位与当前全局状态机的gcstate进行按位与运算，不同则会调用
+<em>singlestep(L)</em>
+函数。该函数里是一个大的switch语句，根据gcstate进行划分，我们可以很清晰地看到gc过程的8个阶段。下面我们来分别介绍一下这些阶段状态的含义：</p>
 <ul>
-<li><strong>GCSpause</strong> : gc前的初始化状态，global_State中的相关链表置成NULL，标记主线程的全局表、注册表等</li>
-<li><strong>GCSpropagate</strong> : 标记阶段，将gray链表的元素标记为黑色并移除，如果gray链表为空则置换状态为GCSatomic</li>
+<li><strong>GCSpause</strong> :
+gc前的初始化状态，global_State中的相关链表置成NULL，标记主线程的全局表、注册表等</li>
+<li><strong>GCSpropagate</strong> :
+标记阶段，将gray链表的元素标记为黑色并移除，如果gray链表为空则置换状态为GCSatomic</li>
 <li><strong>GCSatomic</strong> : 标记阶段的原子操作，不可中断</li>
 <li><strong>GCSswpallgc</strong> : 扫描回收常规对象</li>
 <li><strong>GCSswpfinobj</strong> : 扫描回收被终止器标记的对象</li>
 <li><strong>GCSswptobefnz</strong> : 扫描回收带有gc回调的udata对象</li>
-<li><strong>GCSswpend</strong> : 扫描回收阶段结束阶段，扫描主线程、缩减字符串池大小</li>
-<li><strong>GCScallfin</strong> : tobefnz不为NULL并且非紧急模式，则调用gc回调（通过GCTM），否则将状态置成GCSpause</li>
+<li><strong>GCSswpend</strong> :
+扫描回收阶段结束阶段，扫描主线程、缩减字符串池大小</li>
+<li><strong>GCScallfin</strong> :
+tobefnz不为NULL并且非紧急模式，则调用gc回调（通过GCTM），否则将状态置成GCSpause</li>
 </ul>
-<h3 id="释放流程"><a href="#释放流程" class="headerlink" title="释放流程"></a>释放流程</h3><p>在 <em>sweeplist</em> 函数中会判断如果不是当前gc过程中对应white的对象，会调用 <em>freeobj()</em> 函数，并将该对象节点移除链表。具体的freeobj()代码如下：</p>
+<h3 id="释放流程">释放流程</h3>
+<p>在 <em>sweeplist</em>
+函数中会判断如果不是当前gc过程中对应white的对象，会调用
+<em>freeobj()</em>
+函数，并将该对象节点移除链表。具体的freeobj()代码如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">freeobj</span> <span class="params">(lua_State *L, GCObject *o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;tt) &#123;</span><br><span class="line">      <span class="keyword">case</span> LUA_TPROTO: luaF_freeproto(L, gco2p(o)); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> LUA_TLCL: &#123;</span><br><span class="line">        freeLclosure(L, gco2lcl(o));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">case</span> LUA_TCCL: &#123;</span><br><span class="line">        luaM_freemem(L, o, sizeCclosure(gco2ccl(o)-&gt;nupvalues));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">case</span> LUA_TTABLE: luaH_free(L, gco2t(o)); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> LUA_TTHREAD: luaE_freethread(L, gco2th(o)); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> LUA_TUSERDATA: luaM_freemem(L, o, sizeudata(gco2u(o))); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> LUA_TSHRSTR:</span><br><span class="line">        luaS_remove(L, gco2ts(o));  <span class="comment">/* remove it from hash table */</span></span><br><span class="line">        luaM_freemem(L, o, sizelstring(gco2ts(o)-&gt;shrlen));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> LUA_TLNGSTR: &#123;</span><br><span class="line">        luaM_freemem(L, o, sizelstring(gco2ts(o)-&gt;u.lnglen));</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">default</span>: lua_assert(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>由代码可知，该函数会根据待释放回收的对象类型进行对应操作，具体分析将在之后的针对Lua类型说明以及内存管理相关的博客中具体展开。</p>
 
     </div>
@@ -429,7 +460,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -467,7 +498,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

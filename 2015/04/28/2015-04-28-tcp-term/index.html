@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="TCP传输控制协议(Transmission Controller Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。  UDP用户数据报协议(User Datagram Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到达一">
+  <meta name="description" content="TCP 传输控制协议(Transmission Controller Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。  UDP 用户数据报协议(User Datagram Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP相关的术语总结">
 <meta property="og:url" content="http://aiplay.studio/2015/04/28/2015-04-28-tcp-term/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="TCP传输控制协议(Transmission Controller Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。  UDP用户数据报协议(User Datagram Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到达一">
+<meta property="og:description" content="TCP 传输控制协议(Transmission Controller Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。  UDP 用户数据报协议(User Datagram Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2015-04-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-14T10:29:52.226Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.220Z">
 <meta property="article:author" content="xujh">
 <meta property="article:tag" content="网络协议">
 <meta name="twitter:card" content="summary">
@@ -247,41 +247,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>传输控制协议(Transmission Controller Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。</p>
-<hr>
-<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p>用户数据报协议(User Datagram Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到达一次。</p>
-<hr>
-<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>地址解析协议(Address Resolution Protocol)，把一个IPv4地址映射成一个硬件地址(如以太网地址)。ARP通常用于诸如以太网、令牌环网和FDDI等广播网络，在点到点网络上并不需要。</p>
-<hr>
+        <h3 id="tcp">TCP</h3>
+<p>传输控制协议(Transmission Controller
+Protocol)，是一个面向连接的协议，TCP套接字是一种流套接字，为用户进程提供可靠的全双工字节流。</p>
+<hr />
+<h3 id="udp">UDP</h3>
+<p>用户数据报协议(User Datagram
+Protocl)，是一个无连接协议，UDP套接字是一种数据报套接字，UDP数据报不能保证最终到达目的地，不保证各个数据报的先后顺序夸网络后保持不变，也不保证每个数据报只到达一次。</p>
+<hr />
+<h3 id="arp">ARP</h3>
+<p>地址解析协议(Address Resolution
+Protocol)，把一个IPv4地址映射成一个硬件地址(如以太网地址)。ARP通常用于诸如以太网、令牌环网和FDDI等广播网络，在点到点网络上并不需要。</p>
+<hr />
 <p>###RARP</p>
-<p>反向地址解析协议(Reverse Address Resolution Protocol)，把一个硬件地址映射成IPv4地址，有时用于无盘节点的引导。</p>
-<hr>
+<p>反向地址解析协议(Reverse Address Resolution
+Protocol)，把一个硬件地址映射成IPv4地址，有时用于无盘节点的引导。</p>
+<hr />
 <span id="more"></span>
-
-<h3 id="TCP建立连接的三次握手"><a href="#TCP建立连接的三次握手" class="headerlink" title="TCP建立连接的三次握手"></a>TCP建立连接的三次握手</h3><ol>
-<li><p>服务器端准备好接受外来的连接，通过调用socket、bind和listen这3个函数来完成，称之为被动打开(passive open)。</p>
-</li>
-<li><p>客户端通过调用connect发起主动打开(active open)，客户端TCP发送一个**SYN(Synchronize Sequence Numbers)**，告诉服务器客户端将在连接中发送的数据的初始序列号。</p>
-</li>
-<li><p>服务器必须确认(<strong>ACK, Acknowledgement Number</strong>)，同时自己也得发送一个SYN，它含有服务器将在同一连接中发送的数据的初始序列号。</p>
-</li>
-<li><p>客户端必须确认服务器的SYN。</p>
-</li>
+<h3 id="tcp建立连接的三次握手">TCP建立连接的三次握手</h3>
+<ol type="1">
+<li><p>服务器端准备好接受外来的连接，通过调用socket、bind和listen这3个函数来完成，称之为被动打开(passive
+open)。</p></li>
+<li><p>客户端通过调用connect发起主动打开(active
+open)，客户端TCP发送一个<strong>SYN(Synchronize Sequence
+Numbers)</strong>，告诉服务器客户端将在连接中发送的数据的初始序列号。</p></li>
+<li><p>服务器必须确认(<strong>ACK, Acknowledgement
+Number</strong>)，同时自己也得发送一个SYN，它含有服务器将在同一连接中发送的数据的初始序列号。</p></li>
+<li><p>客户端必须确认服务器的SYN。</p></li>
 </ol>
-<hr>
-<h3 id="TCP终止连接的四次握手"><a href="#TCP终止连接的四次握手" class="headerlink" title="TCP终止连接的四次握手"></a>TCP终止连接的四次握手</h3><ol>
-<li><p>应用进程调用close，执行主动关闭(active close)。该端的TCP于是发送一个**FIN(Finish)**分节，表示数据发送完毕。</p>
-</li>
-<li><p>接收到这个FIN的对端执行被动关闭(passive close)。这个FIN由TCP确认，它的接收也作为一个文件结束符传递给接收端应用进程，因为FIN的接收意味着接收端应用进程在相应连接上再无额外数据可接收。</p>
-</li>
-<li><p>接收到这个文件结束符的应用进程将调用close关闭它的套接字，发送一个FIN。</p>
-</li>
-<li><p>接收这个最终FIN的原发送端TCP(即执行主动关闭的那一端)确认这个FIN。</p>
-</li>
+<hr />
+<h3 id="tcp终止连接的四次握手">TCP终止连接的四次握手</h3>
+<ol type="1">
+<li><p>应用进程调用close，执行主动关闭(active
+close)。该端的TCP于是发送一个<strong>FIN(Finish)</strong>分节，表示数据发送完毕。</p></li>
+<li><p>接收到这个FIN的对端执行被动关闭(passive
+close)。这个FIN由TCP确认，它的接收也作为一个文件结束符传递给接收端应用进程，因为FIN的接收意味着接收端应用进程在相应连接上再无额外数据可接收。</p></li>
+<li><p>接收到这个文件结束符的应用进程将调用close关闭它的套接字，发送一个FIN。</p></li>
+<li><p>接收这个最终FIN的原发送端TCP(即执行主动关闭的那一端)确认这个FIN。</p></li>
 </ol>
-<hr>
-<h3 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h3><p>该状态的持续时间是最长分节生命期(maximum segment lifetme, MSL, RFC1122建议值是2分钟, linux为30s)的两倍，有时称之为2MSL。TIME_WAIT状态可以可靠地实现TCP全双工连接的终止，允许老的重复分节在网络中消逝。TIME_WAIT确保有足够的时间让对端收到ACK，如果被动关闭的那方没有收到ACK，就会触发被动端触发重发FIN，并且保证有有足够的时间让这个连接不会跟后面的连接混在一起。</p>
-<hr>
+<hr />
+<h3 id="time_wait状态">TIME_WAIT状态</h3>
+<p>该状态的持续时间是最长分节生命期(maximum segment lifetme, MSL,
+RFC1122建议值是2分钟,
+linux为30s)的两倍，有时称之为2MSL。TIME_WAIT状态可以可靠地实现TCP全双工连接的终止，允许老的重复分节在网络中消逝。TIME_WAIT确保有足够的时间让对端收到ACK，如果被动关闭的那方没有收到ACK，就会触发被动端触发重发FIN，并且保证有有足够的时间让这个连接不会跟后面的连接混在一起。</p>
+<hr />
 
     </div>
 
@@ -416,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP"><span class="nav-number">1.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP"><span class="nav-number">2.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP"><span class="nav-number">3.</span> <span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">4.</span> <span class="nav-text">TCP建立连接的三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E7%BB%88%E6%AD%A2%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%9B%9B%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">5.</span> <span class="nav-text">TCP终止连接的四次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TIME-WAIT%E7%8A%B6%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">TIME_WAIT状态</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp"><span class="nav-number">1.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#udp"><span class="nav-number">2.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#arp"><span class="nav-number">3.</span> <span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">4.</span> <span class="nav-text">TCP建立连接的三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp%E7%BB%88%E6%AD%A2%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%9B%9B%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">5.</span> <span class="nav-text">TCP终止连接的四次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#time_wait%E7%8A%B6%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">TIME_WAIT状态</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -432,7 +441,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -470,7 +479,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="纹理概述在计算机图形学中，纹理(Texture) 是我们经常会提及的一个名词。 直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。 但在图形学中，纹理更多地是被认作 一块数据，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。 纹理是由 纹素（texel） 构成的，每个纹素记录">
+  <meta name="description" content="纹理概述 在计算机图形学中，纹理(Texture) 是我们经常会提及的一个名词。 直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。 但在图形学中，纹理更多地是被认作 一块数据，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。 纹理是由 纹素（texel） 构成的，每个纹素记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="纹理那些事儿">
 <meta property="og:url" content="http://aiplay.studio/2020/06/21/2020-06-21-something-about-texture/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="纹理概述在计算机图形学中，纹理(Texture) 是我们经常会提及的一个名词。 直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。 但在图形学中，纹理更多地是被认作 一块数据，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。 纹理是由 纹素（texel） 构成的，每个纹素记录">
+<meta property="og:description" content="纹理概述 在计算机图形学中，纹理(Texture) 是我们经常会提及的一个名词。 直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。 但在图形学中，纹理更多地是被认作 一块数据，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。 纹理是由 纹素（texel） 构成的，每个纹素记">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zztg.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zg61.jpg">
@@ -44,10 +44,9 @@
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zX0f.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zOnP.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zH1A.jpg">
-<meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zqXt.md.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2020/06/22/N8zj78.jpg">
 <meta property="article:published_time" content="2020-06-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-14T10:29:52.227Z">
+<meta property="article:modified_time" content="2021-11-14T10:29:52.220Z">
 <meta property="article:author" content="xujh">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s1.ax1x.com/2020/06/22/N8zztg.jpg">
@@ -264,115 +263,216 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="纹理概述"><a href="#纹理概述" class="headerlink" title="纹理概述"></a>纹理概述</h3><p>在计算机图形学中，<strong>纹理(Texture)</strong> 是我们经常会提及的一个名词。</p>
+        <h3 id="纹理概述">纹理概述</h3>
+<p>在计算机图形学中，<strong>纹理(Texture)</strong>
+是我们经常会提及的一个名词。</p>
 <p>直观的第一印象，很容易会将纹理理解成一张图片，实际上在计算机图形学中，我们也确实会经常通过一张张格式诸如png、jpg之类的图片来获得纹理数据。</p>
-<p>但在图形学中，纹理更多地是被认作 <strong>一块数据</strong>，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。</p>
-<p>纹理是由 <strong>纹素（texel）</strong> 构成的，每个纹素记录着相应的颜色信息，它类似于屏幕的 <strong>像素（pixel）</strong> 但又与像素不保证是一一对应的。</p>
+<p>但在图形学中，纹理更多地是被认作
+<strong>一块数据</strong>，它也不再局限在2D空间，也会有一维纹理、三维纹理、立方体映射纹理、数组纹理等。</p>
+<p>纹理是由 <strong>纹素（texel）</strong>
+构成的，每个纹素记录着相应的颜色信息，它类似于屏幕的
+<strong>像素（pixel）</strong> 但又与像素不保证是一一对应的。</p>
 <p>那么纹理为什么会被广泛使用呢？</p>
 <span id="more"></span>
-
 <p>这是因为，我们看到现实世界中所呈现出丰富的颜色，是由于不同物体会吸收一部分光的波长并反射出另一部分出来（如红色物体实际上是因为反射了大部分红色波长出来），最终通过眼睛传入大脑计算成像。而通过计算机去实时模拟这一过程无疑是复杂且耗时的，尤其是游戏要求在短短的一帧（少于0.016s）中就完成一次场景渲染。</p>
-<p>为了解决这个问题，人们想到了一个办法：找到一张图片（离线渲染生成），然后把它“粘”在物体的表面上，就像贴墙纸一样。而这一“粘”的过程，我们管它叫做 <strong>纹理映射（texture mapping）</strong>，实际上也就是一块纹理数据与3D模型建立关联的过程。</p>
+<p>为了解决这个问题，人们想到了一个办法：找到一张图片（离线渲染生成），然后把它“粘”在物体的表面上，就像贴墙纸一样。而这一“粘”的过程，我们管它叫做
+<strong>纹理映射（texture
+mapping）</strong>，实际上也就是一块纹理数据与3D模型建立关联的过程。</p>
 <p>看过武侠小说的应该都听说过“易容术”，将不同的“人皮子”贴在脸上，就可以易容成别人的模样。其实这就是一个简单的纹理映射的过程。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zztg.jpg" alt="N8zztg.jpg"></p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zztg.jpg" alt="N8zztg.jpg" />
+<figcaption aria-hidden="true">N8zztg.jpg</figcaption>
+</figure>
 <p>有人可能会有疑问，每个人的面部肌肉都不尽相同，仅用一张纹理是怎么做到“易容”的呢？卖个关子，后面在纹理的应用中会有介绍。</p>
-<h3 id="纹理映射原理"><a href="#纹理映射原理" class="headerlink" title="纹理映射原理"></a>纹理映射原理</h3><p>在渲染管线中，一般在 <strong>片元着色阶段</strong> 最常使用纹理。</p>
+<h3 id="纹理映射原理">纹理映射原理</h3>
+<p>在渲染管线中，一般在 <strong>片元着色阶段</strong> 最常使用纹理。</p>
 <p>在美术建模时，会为每个顶点分配一个纹理坐标，也被叫做UV坐标。在进入光栅化阶段，生成的每个fragment会根据相关顶点的纹理坐标差值后新的uv，根据这个uv来对传入的纹理数据进行<strong>采样（使用纹理坐标获取纹理颜色）</strong>。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zg61.jpg" alt="N8zg61.jpg"></p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zg61.jpg" alt="N8zg61.jpg" />
+<figcaption aria-hidden="true">N8zg61.jpg</figcaption>
+</figure>
 <p>根据上图说明一下简单的纹理映射，某个三角形包含三个顶点，对应记录的uv坐标分别是(0,0)、(1,0)和(0.5,1)。光栅化之后，每个小格子就是一个fragment，对应屏幕的像素。在这个三角形区域中的每个像素，会根据顶点所记录的纹理坐标来进行差值计算，这就涉及到了三角形内的重心坐标计算。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zf0K.jpg" alt="N8zf0K.jpg"></p>
-<p>如上图，已知三角形ABC内任意一点(x, y)以及三个顶点ABC的位置，即可求出该点相对三角形的重心坐标位置。进而可以计算出该点所在像素对应的UV坐标：</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zf0K.jpg" alt="N8zf0K.jpg" />
+<figcaption aria-hidden="true">N8zf0K.jpg</figcaption>
+</figure>
+<p>如上图，已知三角形ABC内任意一点(x,
+y)以及三个顶点ABC的位置，即可求出该点相对三角形的重心坐标位置。进而可以计算出该点所在像素对应的UV坐标：</p>
 <blockquote>
 <p>(u, v) = 𝛼A(u,v) + 𝛽B(u,v) + 𝛾C(u,v)</p>
 </blockquote>
-<p>一般来说，纹理坐标的范围都是[0, 1]，但在某些情况下，可能会使用超出该范围的结果。例如墙面纹理，我们可以只制作一块砖的纹理图片，在根据模型实际宽度来放大顶点纹理坐标，使得可以循环重复采样同一块砖的纹理。这就涉及到了设置<strong>纹理环绕方式</strong>，在OpenGL中，常见的选择如下：</p>
+<p>一般来说，纹理坐标的范围都是[0,
+1]，但在某些情况下，可能会使用超出该范围的结果。例如墙面纹理，我们可以只制作一块砖的纹理图片，在根据模型实际宽度来放大顶点纹理坐标，使得可以循环重复采样同一块砖的纹理。这就涉及到了设置<strong>纹理环绕方式</strong>，在OpenGL中，常见的选择如下：</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>环绕方式</th>
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr class="odd">
 <td>GL_REPEAT</td>
 <td>对纹理的默认行为，重复纹理图像</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_MINRRORED_REPEAT</td>
 <td>和GL_REPEAT一样，但是镜像重复纹理图像</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>GL_CLAMP_TO_EDGE</td>
 <td>超出[0,1]部分的纹理坐标，重复边缘（拉伸）</td>
 </tr>
-<tr>
+<tr class="even">
 <td>GL_CLAMP_TO_BORDER</td>
 <td>超出[0,1]部分的纹理坐标，指定边缘颜色</td>
 </tr>
-</tbody></table>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8z2Ox.jpg" alt="N8z2Ox.jpg"></p>
-<p>还有一种比较常见的灵活纹理采样方式，就是UV序列帧动画。美术会做好一张 N * N 的图片，最最常见的就是火焰效果了。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zclR.jpg" alt="N8zclR.jpg"></p>
+</tbody>
+</table>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8z2Ox.jpg" alt="N8z2Ox.jpg" />
+<figcaption aria-hidden="true">N8z2Ox.jpg</figcaption>
+</figure>
+<p>还有一种比较常见的灵活纹理采样方式，就是UV序列帧动画。美术会做好一张
+N * N 的图片，最最常见的就是火焰效果了。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zclR.jpg" alt="N8zclR.jpg" />
+<figcaption aria-hidden="true">N8zclR.jpg</figcaption>
+</figure>
 <p>每次在片元着色器对该纹理进行采样的时候，根据一定的频率来调整修改需要传入的UV坐标，使得每次恰好只截取展示其中的一个tile，连续起来会实现出帧动画的效果。</p>
-<p>说到这里不难发现，跟纹理打交道，本质上就是确定<strong>数据内容</strong>和<strong>采样方式</strong>。在片元（像素）着色器中，根据UV坐标对纹理数据中对应纹素的颜色进行提取，再渲染到像素中去。但是，这仅仅是最简单、理想的情况。无论是纹素还是像素，你都可以理解为它们是有<strong>大小</strong>的，只不过人眼不易察觉罢了，毕竟现在手机一般都是<em>1920 * 1020</em>分辨率起步的，还是仅仅在一块6寸大小的空间下。</p>
+<p>说到这里不难发现，跟纹理打交道，本质上就是确定<strong>数据内容</strong>和<strong>采样方式</strong>。在片元（像素）着色器中，根据UV坐标对纹理数据中对应纹素的颜色进行提取，再渲染到像素中去。但是，这仅仅是最简单、理想的情况。无论是纹素还是像素，你都可以理解为它们是有<strong>大小</strong>的，只不过人眼不易察觉罢了，毕竟现在手机一般都是<em>1920
+</em> 1020*分辨率起步的，还是仅仅在一块6寸大小的空间下。</p>
 <p>当纹素与像素的大小比例过于悬殊时，会出现一些明显的“锯齿”现象，下面会从两种情况分别介绍。</p>
-<h4 id="纹理过小"><a href="#纹理过小" class="headerlink" title="纹理过小"></a>纹理过小</h4><p>假设一张 <em>480 * 270</em> 尺寸的纹理要铺满渲染到分辨率为 <em>1920 * 1080</em> 的屏幕上，此时一个纹素的大小可以理解为是像素的4倍。而在片元着色阶段，默认会根据差值计算生成的纹理坐标，找到离该片元最近的纹素，并采样提取其颜色。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zWm6.jpg" alt="N8zWm6.jpg"></p>
+<h4 id="纹理过小">纹理过小</h4>
+<p>假设一张 <em>480 </em> 270* 尺寸的纹理要铺满渲染到分辨率为 <em>1920
+</em> 1080*
+的屏幕上，此时一个纹素的大小可以理解为是像素的4倍。而在片元着色阶段，默认会根据差值计算生成的纹理坐标，找到离该片元最近的纹素，并采样提取其颜色。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zWm6.jpg" alt="N8zWm6.jpg" />
+<figcaption aria-hidden="true">N8zWm6.jpg</figcaption>
+</figure>
 <p>如图，红色点是我们实际想要采样的纹理坐标（由于像素更小，所以采样点会更加精密），而黑色是实际上采样到的纹理坐标对应的颜色。所谓的<strong>锯齿（aliasing）</strong>，就是这么来的：紧挨红色点的右侧和上方，会跟着采样出同一纹素的颜色，但是离红色点更近的左侧部分，却只能采样到相邻左侧纹素的颜色。离着相对较远的两个像素，可以采样出同一种颜色出来，而明明离得更近的两个像素，却只能采样出两个纹素的颜色（有可能颜色差异比较明显）。</p>
 <p>那么如何解决这个问题呢？</p>
-<p>答案就是：<em><strong>双线性过滤（Bilinear Filtering）</strong></em></p>
-<p>先简单介绍一下线性差值的计算，几乎在计算机图形学中经常用到，就是已知 <em>v0</em> 和 <em>v1</em> 两个值，以及一个线性比例，求出该线性比例下对应的值，具体公式如下：</p>
+<p>答案就是：<strong><em>双线性过滤（Bilinear
+Filtering）</em></strong></p>
+<p>先简单介绍一下线性差值的计算，几乎在计算机图形学中经常用到，就是已知
+<em>v0</em> 和 <em>v1</em>
+两个值，以及一个线性比例，求出该线性比例下对应的值，具体公式如下：</p>
 <blockquote>
 <p>lerp(x, v0, v1) = v0 + x (v1 - v0)</p>
 </blockquote>
 <p>所谓的双线性过滤，就是根据某一像素的纹理坐标，找到其周围四个纹素的位置并采样其颜色，通过横向、纵向分别进行差值计算，得到最终的颜色。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zIte.jpg" alt="N8zIte.jpg"></p>
-<p>上图就展示了双线性过滤的基本过程：先找到红色采样点周围的四个纹素位置，采样得到4个颜色分别为 <em>u01</em>、 <em>u11</em>、 <em>u00</em>、 <em>u10</em> ，先横向根据 <em>u01</em> 和 <em>u11</em> 线性差值得到 <em>u1</em> ，<em>u00</em> 和 <em>u10</em> 线性差值得到 <em>u0</em>，再通过 <em>u1</em> 和 <em>u0</em> 进行线性差值得到最终的颜色。</p>
-<p>这样的双线性过滤得到的效果，较之前的 <strong>邻近过滤</strong> 方式，会呈现出更加平滑的颜色过渡，“锯齿感”明显减少了。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8z5kD.jpg" alt="N8z5kD.jpg"></p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zIte.jpg" alt="N8zIte.jpg" />
+<figcaption aria-hidden="true">N8zIte.jpg</figcaption>
+</figure>
+<p>上图就展示了双线性过滤的基本过程：先找到红色采样点周围的四个纹素位置，采样得到4个颜色分别为
+<em>u01</em>、 <em>u11</em>、 <em>u00</em>、 <em>u10</em> ，先横向根据
+<em>u01</em> 和 <em>u11</em> 线性差值得到 <em>u1</em> ，<em>u00</em> 和
+<em>u10</em> 线性差值得到 <em>u0</em>，再通过 <em>u1</em> 和 <em>u0</em>
+进行线性差值得到最终的颜色。</p>
+<p>这样的双线性过滤得到的效果，较之前的 <strong>邻近过滤</strong>
+方式，会呈现出更加平滑的颜色过渡，“锯齿感”明显减少了。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8z5kD.jpg" alt="N8z5kD.jpg" />
+<figcaption aria-hidden="true">N8z5kD.jpg</figcaption>
+</figure>
 <p>其实还有个<strong>三线性过滤（Trilinear）</strong>，虽然能得到更加平滑自然的效果，但是计算成本更高，这里就不再展开讨论了。</p>
-<h4 id="纹理过大"><a href="#纹理过大" class="headerlink" title="纹理过大"></a>纹理过大</h4><p>说完纹理过小，我们再来讨论下纹理过大的情况。也许你心中会有疑惑，纹理过大也不行？</p>
+<h4 id="纹理过大">纹理过大</h4>
+<p>说完纹理过小，我们再来讨论下纹理过大的情况。也许你心中会有疑惑，纹理过大也不行？</p>
 <p>其实道理类似，纹理过大，每个纹素的大小相较于像素更小了，就导致每个像素覆盖的区域实际上会包含多个纹素，但在片元着色阶段只会进行一次<strong>点采样</strong>，得到的结果显然是不够“精密”的。从信号学的角度上来理解，每个像素的信号频率远远低于纹理上的信号频率，于是也会形成锯齿的效果。假设一张特别大的纹理贴在地面上，由于透视的近大远小效果，会放大像素与纹素的信号频率差距，因此远处的地面会形成“摩尔纹”的景致。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zofH.jpg" alt="N8zofH.jpg"></p>
-<p>解决这个问题一个最直观的办法就是 <strong>超级采样（Super Sampling）</strong> ，既然每个像素只采样一次不足以覆盖包含的所有纹素的话，那就多采样几次，并将最终的采样结果中和一样，生成该像素的颜色。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zofH.jpg" alt="N8zofH.jpg" />
+<figcaption aria-hidden="true">N8zofH.jpg</figcaption>
+</figure>
+<p>解决这个问题一个最直观的办法就是 <strong>超级采样（Super
+Sampling）</strong>
+，既然每个像素只采样一次不足以覆盖包含的所有纹素的话，那就多采样几次，并将最终的采样结果中和一样，生成该像素的颜色。</p>
 <p>超级采样虽然的确能以较高的质量解决锯齿问题，但计算成本实在是太高了！尤其是很远处的像素，为了抗锯齿进行了大量的多重采样，人眼看到的结果却无法辨别细节，这无疑是一种严重的浪费。（当然，如果性能条件允许，这么做也无可厚非。）</p>
-<p>为了能够高效获取某一像素下对应纹理的某一区域颜色，计算机图形学中的常见解决方案是：将一块纹理生成一系列的纹理图像，其中后一个纹理图像是前一个尺寸的二分之一。这种解决方案叫做 <strong>多级渐远纹理（Mipmap）</strong> ，其中 <em>Mip</em> 一词源于拉丁语，意为 <em>一小块空间下许多细小的东西 （multum in parvo）</em> 。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zhTO.jpg" alt="N8zhTO.jpg"></p>
+<p>为了能够高效获取某一像素下对应纹理的某一区域颜色，计算机图形学中的常见解决方案是：将一块纹理生成一系列的纹理图像，其中后一个纹理图像是前一个尺寸的二分之一。这种解决方案叫做
+<strong>多级渐远纹理（Mipmap）</strong> ，其中 <em>Mip</em>
+一词源于拉丁语，意为 <em>一小块空间下许多细小的东西 （multum in
+parvo）</em> 。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zhTO.jpg" alt="N8zhTO.jpg" />
+<figcaption aria-hidden="true">N8zhTO.jpg</figcaption>
+</figure>
 <p>Mipmap是一种典型的空间换时间的解决手段，通过<strong>范围查询</strong>来替代之前双线性差值所做的<strong>点查询</strong>，它的好处就是速度快，但是也有缺点：结果不够准确、只能用于正方形(2的幂次方）贴图，以及增加了额外的存储量（增量约为1/3）。</p>
 <p>我们如何确定该使用那一层的Mip呢？道理其实很简单：</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8z7pd.jpg" alt="N8z7pd.jpg"></p>
-<p>假设一个三角形覆盖屏幕一定区域的像素，其中选择一红色的采样点以及其相邻的3个采样点（都是红色），映射到纹理坐标系下，求出两个像素采样点在纹理坐标系下的近似长度 <em>L</em> 以及一块粉红色的区域。根据这块区域的近似面积以及纹素的大小，就可以得出该使用哪个层的Mip了。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8z7pd.jpg" alt="N8z7pd.jpg" />
+<figcaption aria-hidden="true">N8z7pd.jpg</figcaption>
+</figure>
+<p>假设一个三角形覆盖屏幕一定区域的像素，其中选择一红色的采样点以及其相邻的3个采样点（都是红色），映射到纹理坐标系下，求出两个像素采样点在纹理坐标系下的近似长度
+<em>L</em>
+以及一块粉红色的区域。根据这块区域的近似面积以及纹素的大小，就可以得出该使用哪个层的Mip了。</p>
 <p>比如：</p>
 <p><em>如果正好是一个纹素的大小，也就是一个像素对应一个纹素，那么就选择第0层的Mip</em></p>
 <p><em>如果对应四个纹素的大小，也就是一个像素对应4个纹素，那么就选择第1层的Mip</em></p>
-<p>以此类推，得出上图中出现的公式:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D = log&#123;2&#125;L</span><br></pre></td></tr></table></figure>
-
+<p>以此类推，得出上图中出现的公式: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D = log&#123;2&#125;L</span><br></pre></td></tr></table></figure></p>
 <p>当计算出的层数恰好不是整数的时候（事实上经常会出现这种情况），同一纹理上的不同Mip之间会出现明显的断层现象，如下图底部的红色区域，深红色直接过渡到鲜红色，十分地不自然。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zb6I.jpg" alt="N8zb6I.jpg"></p>
-<p>出现了这种不自然的平滑过渡，解决办法依然是：<strong>差值</strong> ！</p>
-<p>假设计算出的Mip层数是0.7，那么需要将该采样点在第0层和第1层分别进行双线性差值，然后再将两个Mip计算出的颜色结果再进行一次线性差值，得到最终的颜色。我们管这种计算方法叫做：<strong>三线性差值（Trilinear Interpolation）</strong>。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zb6I.jpg" alt="N8zb6I.jpg" />
+<figcaption aria-hidden="true">N8zb6I.jpg</figcaption>
+</figure>
+<p>出现了这种不自然的平滑过渡，解决办法依然是：<strong>差值</strong>
+！</p>
+<p>假设计算出的Mip层数是0.7，那么需要将该采样点在第0层和第1层分别进行双线性差值，然后再将两个Mip计算出的颜色结果再进行一次线性差值，得到最终的颜色。我们管这种计算方法叫做：<strong>三线性差值（Trilinear
+Interpolation）</strong>。</p>
 <p>下图是使用三线性差值后的表现，是不是平滑了许多？</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zX0f.jpg" alt="N8zX0f.jpg"></p>
-<p>但是某些情况下，使用三线性差值计算出的Mipmap颜色依旧会有问题。类似开放世界的第一人称视角，看向很远处的位置，可能会产生出over blur的效果。还记得Mipmap的缺点吗？它只能针对正方形纹理进行Mip分层，当透视效果越明显，越远处的像素对应纹理中的区域会越不接近正方形（更像长条的巨型），如果使用面积更大的正方形来包住这个矩形区域，此时的差值结果就会愈加不准确，造成了越远处越模糊的感觉。</p>
-<p>为了解决这个问题，很多硬件都支持 <strong>各项异性过滤</strong>，例如OpenGL中可以通过 <em>GL_TEXTURE_MAX_ANISOTROPY_EXT</em> 来设置纹理中各项异性过滤的数值。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zOnP.jpg" alt="N8zOnP.jpg"></p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zX0f.jpg" alt="N8zX0f.jpg" />
+<figcaption aria-hidden="true">N8zX0f.jpg</figcaption>
+</figure>
+<p>但是某些情况下，使用三线性差值计算出的Mipmap颜色依旧会有问题。类似开放世界的第一人称视角，看向很远处的位置，可能会产生出over
+blur的效果。还记得Mipmap的缺点吗？它只能针对正方形纹理进行Mip分层，当透视效果越明显，越远处的像素对应纹理中的区域会越不接近正方形（更像长条的巨型），如果使用面积更大的正方形来包住这个矩形区域，此时的差值结果就会愈加不准确，造成了越远处越模糊的感觉。</p>
+<p>为了解决这个问题，很多硬件都支持
+<strong>各项异性过滤</strong>，例如OpenGL中可以通过
+<em>GL_TEXTURE_MAX_ANISOTROPY_EXT</em>
+来设置纹理中各项异性过滤的数值。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zOnP.jpg" alt="N8zOnP.jpg" />
+<figcaption aria-hidden="true">N8zOnP.jpg</figcaption>
+</figure>
 <p>上图左侧为三线性差值，右侧为将各向异性设置到最大，远处细节明显得到了加强。</p>
-<h4 id="虚拟纹理"><a href="#虚拟纹理" class="headerlink" title="虚拟纹理"></a>虚拟纹理</h4><p>读到这里，相信你已经对纹理映射有了更清晰的认知。在现实游戏开发中，为了有更好的视觉体验，往往会使用更大的纹理加Mipmap的形式来表现物体，但这就会给带<strong>显存宽带</strong>来压力。为了解决这一问题，出现了<strong>虚拟纹理</strong>这一解决方案。</p>
-<p>虚拟纹理的思路与LOD Mesh的思路比较接近，就是不会一次性将整张巨大的纹理加载到内存中，而是根据实际需要，将需要的部分进行加载。实现方法就是，将每层Mip拆分成大小一致的tile（虚拟纹理），根据某种规则，映射到内存中存在的纹理（<strong>物理纹理</strong>）中。当视野发生变化的时候，物理纹理中的一部分会发生变化，重新映射相应虚拟纹理中的内容。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zH1A.jpg" alt="N8zH1A.jpg"></p>
-<p>关于虚拟纹理，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/138484024">这篇文章</a>十分推荐阅读，以及关于<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/147213120">虚幻4中虚拟纹理的源码导读</a>。</p>
-<h3 id="纹理应用"><a href="#纹理应用" class="headerlink" title="纹理应用"></a>纹理应用</h3><p>纹理在实际应用当中，远不止贴上“一层皮”那么简单。通过各种各样的纹理，我们可以实现出更加逼真、高效的表现来。下面简要介绍一些比较常见的纹理贴图应用。</p>
-<p>更多详细的介绍，请参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/27339998">这篇文章</a>。</p>
-<h4 id="Bump-Noramal-Map"><a href="#Bump-Noramal-Map" class="headerlink" title="Bump/Noramal Map"></a>Bump/Noramal Map</h4><p>有的时候，纹理并不只是用来存储颜色，也可以存储一些高度、法线信息，用来在一个光滑表面来展现出一些细节上“不平整”的trick效果。</p>
-<p>我们管这种贴图叫 <strong>凹凸贴图</strong> 或 <strong>法线贴图</strong>。</p>
-<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/N8zqXt"><img src="https://s1.ax1x.com/2020/06/22/N8zqXt.md.jpg" alt="N8zqXt.md.jpg"></a></p>
-<p>一般的法线贴图，都会呈现出一种偏蓝色的效果。这是因为平面上的法线向量为(0， 0， 1) ，正好对应 <em>RGB</em> 中的 <strong>B</strong> 通道。法线贴图只是对不同平面上的法线进行轻微的扰动，造成光线反射到人眼（摄像机）的方向发生变化，从而营造出一些明暗变化的细节表现。</p>
+<h4 id="虚拟纹理">虚拟纹理</h4>
+<p>读到这里，相信你已经对纹理映射有了更清晰的认知。在现实游戏开发中，为了有更好的视觉体验，往往会使用更大的纹理加Mipmap的形式来表现物体，但这就会给带<strong>显存宽带</strong>来压力。为了解决这一问题，出现了<strong>虚拟纹理</strong>这一解决方案。</p>
+<p>虚拟纹理的思路与LOD
+Mesh的思路比较接近，就是不会一次性将整张巨大的纹理加载到内存中，而是根据实际需要，将需要的部分进行加载。实现方法就是，将每层Mip拆分成大小一致的tile（虚拟纹理），根据某种规则，映射到内存中存在的纹理（<strong>物理纹理</strong>）中。当视野发生变化的时候，物理纹理中的一部分会发生变化，重新映射相应虚拟纹理中的内容。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zH1A.jpg" alt="N8zH1A.jpg" />
+<figcaption aria-hidden="true">N8zH1A.jpg</figcaption>
+</figure>
+<p>关于虚拟纹理，<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/138484024">这篇文章</a>十分推荐阅读，以及关于<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/147213120">虚幻4中虚拟纹理的源码导读</a>。</p>
+<h3 id="纹理应用">纹理应用</h3>
+<p>纹理在实际应用当中，远不止贴上“一层皮”那么简单。通过各种各样的纹理，我们可以实现出更加逼真、高效的表现来。下面简要介绍一些比较常见的纹理贴图应用。</p>
+<p>更多详细的介绍，请参考<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/27339998">这篇文章</a>。</p>
+<h4 id="bumpnoramal-map">Bump/Noramal Map</h4>
+<p>有的时候，纹理并不只是用来存储颜色，也可以存储一些高度、法线信息，用来在一个光滑表面来展现出一些细节上“不平整”的trick效果。</p>
+<p>我们管这种贴图叫 <strong>凹凸贴图</strong> 或
+<strong>法线贴图</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/N8zqXt"><img
+src="https://s1.ax1x.com/2020/06/22/N8zqXt.md.jpg"
+alt="N8zqXt.md.jpg" /></a></p>
+<p>一般的法线贴图，都会呈现出一种偏蓝色的效果。这是因为平面上的法线向量为(0，
+0， 1) ，正好对应 <em>RGB</em> 中的 <strong>B</strong>
+通道。法线贴图只是对不同平面上的法线进行轻微的扰动，造成光线反射到人眼（摄像机）的方向发生变化，从而营造出一些明暗变化的细节表现。</p>
 <p>下面是没有使用法线贴图与使用法线贴图的对比效果。</p>
-<p><img src="https://s1.ax1x.com/2020/06/22/N8zj78.jpg" alt="N8zj78.jpg"></p>
-<h4 id="Light-Map"><a href="#Light-Map" class="headerlink" title="Light Map"></a>Light Map</h4><p>对于一些相对静态的场景，实时地去计算复杂的全局光照无疑是十分影响性能的，尤其是在移动平台。于是，会先离线渲染出一张场景的光照贴图，里面包含了当时场景复杂的光照计算结果，通过与场景的漫反射贴图相结合来生成一个不错的光影表现效果，并且节约了性能开销。唯一的缺点就是，如果镜头或光源在Runtime会发生动态变化，很容易穿帮。</p>
-<h4 id="Cube-Map"><a href="#Cube-Map" class="headerlink" title="Cube Map"></a>Cube Map</h4><p>立方体纹理由6块方形的纹理组成，分别对应一个立方体的6个面。立方体贴图有一个非常重要的作用，就是可以根据一个方向向量来进行采样。</p>
-<p>常见的一种做法，利用Cube Map制作出一张环境光的反射贴图，并将一个模型包起来，根据模型表面的法线采样Cube Map对应的纹素点，将得到的颜色与模型Diffuse贴图的颜色结合计算，得到一个相对逼真的模拟环境光反射效果。模型在这个Cube下的自旋转，表面的光影也会随着发生相应的变化。只不过与使用烘焙出来的Light Map类似，当镜头或光源发生变化时，还是容易出现穿效果，也只是一种降低性能开销的取巧办法。</p>
+<figure>
+<img src="https://s1.ax1x.com/2020/06/22/N8zj78.jpg" alt="N8zj78.jpg" />
+<figcaption aria-hidden="true">N8zj78.jpg</figcaption>
+</figure>
+<h4 id="light-map">Light Map</h4>
+<p>对于一些相对静态的场景，实时地去计算复杂的全局光照无疑是十分影响性能的，尤其是在移动平台。于是，会先离线渲染出一张场景的光照贴图，里面包含了当时场景复杂的光照计算结果，通过与场景的漫反射贴图相结合来生成一个不错的光影表现效果，并且节约了性能开销。唯一的缺点就是，如果镜头或光源在Runtime会发生动态变化，很容易穿帮。</p>
+<h4 id="cube-map">Cube Map</h4>
+<p>立方体纹理由6块方形的纹理组成，分别对应一个立方体的6个面。立方体贴图有一个非常重要的作用，就是可以根据一个方向向量来进行采样。</p>
+<p>常见的一种做法，利用Cube
+Map制作出一张环境光的反射贴图，并将一个模型包起来，根据模型表面的法线采样Cube
+Map对应的纹素点，将得到的颜色与模型Diffuse贴图的颜色结合计算，得到一个相对逼真的模拟环境光反射效果。模型在这个Cube下的自旋转，表面的光影也会随着发生相应的变化。只不过与使用烘焙出来的Light
+Map类似，当镜头或光源发生变化时，还是容易出现穿效果，也只是一种降低性能开销的取巧办法。</p>
 
     </div>
 
@@ -443,8 +543,8 @@
       <i class="fa fa-chevron-left"></i> 手游开发中渲染优化的三个要素
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/07/06/2020-07-06-introduction-for-pbr/" rel="next" title="适合小白的PBR入门指南">
-      适合小白的PBR入门指南 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/05/07/2021-05-07-dream-reality-gameproducer/" rel="next" title="爱，死亡，游戏制作人">
+      爱，死亡，游戏制作人 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -504,7 +604,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">纹理概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">纹理映射原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E8%BF%87%E5%B0%8F"><span class="nav-number">2.1.</span> <span class="nav-text">纹理过小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E8%BF%87%E5%A4%A7"><span class="nav-number">2.2.</span> <span class="nav-text">纹理过大</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%BA%B9%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">虚拟纹理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">纹理应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Bump-Noramal-Map"><span class="nav-number">3.1.</span> <span class="nav-text">Bump&#x2F;Noramal Map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Light-Map"><span class="nav-number">3.2.</span> <span class="nav-text">Light Map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cube-Map"><span class="nav-number">3.3.</span> <span class="nav-text">Cube Map</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">纹理概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">纹理映射原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E8%BF%87%E5%B0%8F"><span class="nav-number">2.1.</span> <span class="nav-text">纹理过小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E8%BF%87%E5%A4%A7"><span class="nav-number">2.2.</span> <span class="nav-text">纹理过大</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%BA%B9%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">虚拟纹理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">纹理应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bumpnoramal-map"><span class="nav-number">3.1.</span> <span class="nav-text">Bump&#x2F;Noramal Map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#light-map"><span class="nav-number">3.2.</span> <span class="nav-text">Light Map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cube-map"><span class="nav-number">3.3.</span> <span class="nav-text">Cube Map</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -520,7 +620,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -558,7 +658,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
