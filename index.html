@@ -183,6 +183,156 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2022/03/26/2022-03-26-particle-design/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xujh">
+      <meta itemprop="description" content="爱生活 | 爱丸子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爱丸游戏工作室">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/26/2022-03-26-particle-design/" class="post-title-link" itemprop="url">粒子系统设计随想</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-26 00:00:00 / 修改时间：16:55:03" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+08:00">2022-03-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>首先是关于粒子系统的概念，维基百科上是这么描述的：</p>
+<blockquote>
+<p>粒子系统表示三维计算机图形学中模拟一些特定的模糊现象的技术，而这些现象用其它传统的渲染技术难以实现的真实感的游戏图形。经常使用粒子系统模拟的现象有火、爆炸、烟、水流、火花、落叶、云、雾、雪、尘、流星尾迹或者象发光轨迹这样的抽象视觉效果等等。</p>
+</blockquote>
+<p>除过影视行业，CG
+特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细节处理，使得游戏体验更加细腻。因此，在游戏引擎中，粒子系统往往承担着实现特效效果的重要角色。</p>
+<p>早期的粒子系统，设计时通常会提供好各种固定功能的模块，诸如控制粒子的大小、颜色、方向等属性，对于特效设计人员来讲，只要在一个可视化的环境下，调节好各种参数即可。通常根据指责可划分成三个阶段：<strong>发射</strong>、<strong>影响</strong>、<strong>渲染</strong>。所以不管哪个游戏引擎的粒子系统，难免会经常看到诸如<em>Emitter</em>、<em>Renderer</em>等之类的词语。</p>
+<p>如下图所示，一个粒子根据上述三个阶段依次由出生（确定位置、速度、颜色、大小、初始旋转），到接受更新影响（变化参数可以是随机值、曲线等），最后根据渲染设置来重新组织、生成粒子的顶点数据并进行绘制。不同人设计出来的粒子系统可能看起来千差万别，但回归本质不难发现，谁也逃不出这三个步骤。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Particle%20Pipeline.png"
+alt="基础Particle Pipeline" />
+<figcaption aria-hidden="true">基础Particle Pipeline</figcaption>
+</figure>
+<p>这种模式有点类似早些年图形渲染中的“固定管线”，虽说一定程度上限制了设计人员的发挥，但是针对不同的特效，往往会衍生出固定的“套路”来。更新粒子模型、贴图，再配合上胶水代码（例如Lua脚本）来控制一些动态输入参数以及事件处理，基本上可以满足大部分的效果需求。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Module%20Pipeline.png"
+alt="ParticleSystem Modules" />
+<figcaption aria-hidden="true">ParticleSystem Modules</figcaption>
+</figure>
+<p>上图展示了一个功能基本完备的粒子系统模块流水线，主要借鉴了Unity中粒子系统的相关Module，笔者也曾在一款基于移动端的自研游戏引擎中，搞过一套功能几乎一样的粒子系统。下图则是Unity中一个ParticleSystem组件的基本Module分布：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Unity_ParticleSystem.png"
+alt="Unity ParticleSystem Component" />
+<figcaption aria-hidden="true">Unity ParticleSystem
+Component</figcaption>
+</figure>
+<p>细致的模块划分，除过行业经验的积累，更主要还是为了<strong>功能解耦</strong>。我们知道，一个特效效果，往往是<strong>调试</strong>出来的，谁也没法准确的设定某个特效的具体参数，也仅仅是凭借脑子里的经验模型来不断试错。如果粒子系统的功能模块过于耦合，在游戏引擎迭代的过程中很难保证向下兼容，之前做的效果又要推倒重来，并且也不利于特效美术建立“经验模型”。</p>
+<p>其实早在Unity
+5.x时代的粒子系统，每个模块的很多参数支持以及像Lights、Custom
+Data这类更高级一些的特性都还没有支持，这都是在引擎版本迭代中慢慢积累起来的。每一次更新，无疑都会解放一部分特效制作人员的思维束缚，以及提高不少的产出效率。</p>
+<p>在与不同项目的特效美术同事打交道的过程中，我发现他们大多数都把粒子系统当做一个黑盒来使用（诚然确实也没办法去深刻理解引擎内部的具体实现），即便产生了一些特殊的制作思路，但碍于引擎更新迭代的各种成本，也都退而求其次以另一种方案来进行替代。但相比较于Unity这类商业游戏引擎，自研引擎也有一定的独特优势，就是可以根据项目需求来快速扩展制定出特殊的功能模块，也许并不是通用的最优解决方案，但无疑能提升生产力以匹配项目进度。</p>
+<p>这类“固定管线”形式的粒子系统伴随着整个游戏行业繁衍了很长时间，直至UnrealEngine发布了它们的全新粒子系统：<strong>Niagara</strong>。</p>
+<p>它采用类似Houdini那样的可视化节点的形式来制作特效，而不是传统的表格形式的参数调配。组织形式上与Unity的ParticleSystem也有一定的区别。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/NiagaraMain.png"
+alt="Niagara编辑主界面" />
+<figcaption aria-hidden="true">Niagara编辑主界面</figcaption>
+</figure>
+<p>如上图，这是NiagaraSystem的主界面，它的混合结构与Unity的ParticleSystem有着不小的差别。这里的NiagaraSystem是一个复合特效效果的集合，它里面由若干个Emitter组成。Niagara的Emitter并不仅仅对标之前所提的发射阶段，也包含了影响阶段和渲染阶段的全部功能。因此，一个Emitter更像是对标Unity中的ParticleSystem组件。在Unity中制作一个特效，往往需要一个树形结构下的多个GameObject分别挂载着不同的ParticleSystem组件组合而成，其中每个ParticleSystem负责发射一类粒子。</p>
+<p>其实两者的实现目的都是一致的，但是Niagara的形式更符合美术的思维习惯，也更容易专注于效果的调试与制作，不用再牵扯精力去关心Transform组件或是整体的Node层级结构，全部放到一起，更加地一目了然。</p>
+<p>推荐阅读虚幻的官方文档<a
+target="_blank" rel="noopener" href="https://docs.unrealengine.com/4.27/zh-CN/RenderingAndGraphics/Niagara/NiagaraKeyConcepts/">《Niagara关键概念》</a>来理解Niagara的相关理念。其中，它的VFX系统目标，个人还是十分赞同的：</p>
+<ul>
+<li>美术师可全权掌控效果</li>
+<li>各轴均可编程、可自定义</li>
+<li>提供更好的调试、显示和性能工具</li>
+<li>支持来自虚幻引擎4其他部分或外部源的数据</li>
+<li>不妨碍用户操作</li>
+</ul>
+<p>关于Niagara的强大，完全可以再开一篇甚至是多篇文章来详细介绍。这里想要强调的是，它完全实现了功能模块的<strong>可定制化</strong>。鼠标双击Emitter中的任意Item，会跳转到一个新的Niagara
+Script窗口，如下图所示：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/NiagaraModuleGraph.png"
+alt="Niagara Script Graph" />
+<figcaption aria-hidden="true">Niagara Script Graph</figcaption>
+</figure>
+<p>类似蓝图的Graph实现了对应Module下的全部功能逻辑，可以称之为Niagara脚本，具体源码实现在UNiagaraScript类中，继承自UObject，并且对应着一种资产。因此美术可以创建自己的<strong>Niagara
+Module Script</strong>和<strong>Niagara Function
+Script</strong>，灵活地应用于Emitter之中。也就是说，美术终于能够自己独立实现Module的逻辑了，不再受限于程序开发。</p>
+<p>对于创造力十足、很有想法的特效美术来说，这无疑是一巨大福音。</p>
+<p>但凡事都有两面性，很多时候我们可能并不需要放飞自我、无节制的创造，80%的制作还是离不开那几个老生常谈的参数。为此，Niagara也提供好了很多内置模块，方便大家像之前那样快速、直接地搭建出基础的粒子效果出来。即便这样，<strong>Niagara的学习成本无疑还是大大增加了</strong>。而且对于程序开发人员来讲，很多Module的逻辑通过Graph的形式阅读起来也比较头疼，虽然可以插入Custom
+HLSL代码（Niagara
+Script本质就是使用HLSL编译模块），但用起来也会有许多坑在里面。</p>
+<p>说到这里，Niagara的思路对现代游戏引擎的粒子系统设计还是有着非常多的借鉴意义。它解决了美术制作特效的最大痛点，并能更好地去进行效果调试和性能调优。</p>
+<p>归根结底，特效的制作工作流无论怎么完善，粒子系统无论怎么设计，其根本出发点无非就是：<strong>产出效率</strong>与<strong>运行效率</strong>。无论是制作一款3A大作，还是移动平台的休闲游戏，虽然需求形式大相径庭，但也逃不过上述两点。基于这两个出发点，以及以往的经验和一些商业引擎的借鉴，整理了如下一份粒子系统设计的思维导图：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/ParticleSystemDesign.png"
+alt="Particle System Design" />
+<figcaption aria-hidden="true">Particle System Design</figcaption>
+</figure>
+<p>想要为游戏引擎设计出一款好的粒子系统，除了老生常谈的基于SOA架构的DOP模式，支持应对海量粒子模拟的GPU方案，还要包括强大、便利的<strong>数据通信能力</strong>，包括并不仅限于粒子系统内部，游戏引擎的其他模块，甚至于针对外部资产数据的处理和交互。</p>
+<p><strong>编辑器的配套支持</strong>也是尤为重要的，毕竟粒子系统的内核设计的再完美，架构再优越，最终也是要给人来用的。抛开一些硬核功能的支持不谈，如果操作过于繁琐甚至于workflow上有些反人类，都会导致它不能被大众所接受。往往使用粒子系统更多的还是美术从业人员，因此从他们的角度、思维习惯来设计十分重要。此外，粒子系统也常常是需要进行性能优化的地方，为了平衡美术与程序在效果与性能之间的根本冲突，完备的<strong>性能调试</strong>辅助工具也是需要的，以数据事实说话节约沟通成本，也有助于系统设计初期暴露出一些隐藏的性能问题。</p>
+<p>最后，这篇文章可能有很多不够严谨或是值得商榷的地方，欢迎各路特效大神来指点、交流。
+)</p>
+<p>想要为游戏引擎设计出一款好的粒子系统，除了老生常谈的基于SOA架构的DOP模式，支持应对海量粒子模拟的GPU方案，还要包括强大、便利的<strong>数据通信能力</strong>，包括并不仅限于粒子系统内部，游戏引擎的其他模块，甚至于针对外部资产数据的处理和交互。</p>
+<p><strong>编辑器的配套支持</strong>也是尤为重要的，毕竟粒子系统的内核设计的再完美，架构再优越，最终也是要给人来用的。抛开一些硬核功能的支持不谈，如果操作过于繁琐甚至于workflow上有些反人类，都会导致它不能被大众所接受。往往使用粒子系统更多的还是美术从业人员，因此从他们的角度、思维习惯来设计十分重要。此外，粒子系统也常常是需要进行性能优化的地方，为了平衡美术与程序在效果与性能之间的根本冲突，完备的<strong>性能调试</strong>辅助工具也是需要的，以数据事实说话节约沟通成本，也有助于系统设计初期暴露出一些隐藏的性能问题。</p>
+<p>最后，这篇文章可能有很多不够严谨或是值得商榷的地方，欢迎各路特效大神来指点、交流。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2021/05/07/2021-05-07-dream-reality-gameproducer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -966,102 +1116,6 @@ href="www.genymotion.com">Genymotion</a>是一款出色、高效的Android模拟
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2016/08/09/2016-08-09-sol2-tutorail/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xujh">
-      <meta itemprop="description" content="爱生活 | 爱丸子">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="爱丸游戏工作室">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/08/09/2016-08-09-sol2-tutorail/" class="post-title-link" itemprop="url">Sol2使用教程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2016-08-09T00:00:00+08:00">2016-08-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Lua/" itemprop="url" rel="index"><span itemprop="name">Lua</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="sol2简介">Sol2简介</h3>
-<p>Sol是一个用于C++绑定Lua脚本的库，仅由头文件组成，方便集成，并提供了大量易用的API接口，可以便利地将Lua脚本与C++代码绑定起来，而不必去关心如何使用那些晦涩的Lua
-C
-API。正如其作者所言，Sol的目的就是提供极其简洁的API，并能高效到与C语言媲美，极大地来方便人们使用。</p>
-<p>Sol支持Lua的绝大多数版本，包括
-5.1、5.2、5.3和LuaJit等，但由于代码中用到了许多C++11/14特性，因此编译时需要编译器支持C++14标准。</p>
-<p>具体使用以及介绍详情，请前往<a
-target="_blank" rel="noopener" href="https://github.com/ThePhD/sol2">Github仓库</a>和<a
-target="_blank" rel="noopener" href="http://sol2.readthedocs.io/en/latest/index.html">Sol2主页</a>。</p>
-<h3 id="基础使用">基础使用</h3>
-<p>从Sol的<a
-target="_blank" rel="noopener" href="https://github.com/ThePhD/sol2">Github仓库</a>clone下代码后，我们发现其目录下很多test开头的cpp/hpp文件，这些文件里面有着大量的Sol的使用示例以及各种特性的展示，而在example目录下的cpp文件都仅仅是一些最基础的使用示例。为了方便测试和体验Sol，你也可以自己建立一些自己的test.cpp文件，首先你要在源文件中include引用sol.hpp头文件，这样才能使用Sol提供的接口。而在使用gcc编译的时候，需要指定关联头文件的路径，可以使用如下命令：</p>
-<pre><code>g++ test.cpp -Isolpath/single/sol -llua -std=c++14</code></pre>
-<p>其中solpath是你Sol2的具体路径，在Sol2的项目目录下，有一个single/sol/sol.hpp头文件，这个头文件集成了所有的相关代码到一起，所以编译时
--I
-后仅指定这一个路径就可以了，同时要保证你的gcc编译器支持C++14标准。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/08/09/2016-08-09-sol2-tutorail/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1133,7 +1187,7 @@ target="_blank" rel="noopener" href="https://github.com/ThePhD/sol2">Github仓�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

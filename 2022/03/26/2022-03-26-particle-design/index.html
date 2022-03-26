@@ -22,20 +22,19 @@
     var CONFIG = {"hostname":"aiplay.studio","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":15,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="关于tolua++ tolua如何工作 tolua++是tolua的扩展版本，一款能够极大地简化C&#x2F;C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C&#x2F;C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C&#x2F;C++中的常量，外部变量，函数，类和方法来给Lua使用。 使用tolua通常要先建立pkg文件，里面包含对应C&#x2F;">
+  <meta name="description" content="首先是关于粒子系统的概念，维基百科上是这么描述的：  粒子系统表示三维计算机图形学中模拟一些特定的模糊现象的技术，而这些现象用其它传统的渲染技术难以实现的真实感的游戏图形。经常使用粒子系统模拟的现象有火、爆炸、烟、水流、火花、落叶、云、雾、雪、尘、流星尾迹或者象发光轨迹这样的抽象视觉效果等等。  除过影视行业，CG 特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于Cocos2d-x的lua绑定机制">
-<meta property="og:url" content="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/index.html">
+<meta property="og:title" content="粒子系统设计随想">
+<meta property="og:url" content="http://aiplay.studio/2022/03/26/2022-03-26-particle-design/index.html">
 <meta property="og:site_name" content="爱丸游戏工作室">
-<meta property="og:description" content="关于tolua++ tolua如何工作 tolua++是tolua的扩展版本，一款能够极大地简化C&#x2F;C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C&#x2F;C++特性的绑定代码，通过使用Lua API和标记方法工具，tolua来映射管理C&#x2F;C++中的常量，外部变量，函数，类和方法来给Lua使用。 使用tolua通常要先建立pkg文件，里面包含对应C&#x2F;">
+<meta property="og:description" content="首先是关于粒子系统的概念，维基百科上是这么描述的：  粒子系统表示三维计算机图形学中模拟一些特定的模糊现象的技术，而这些现象用其它传统的渲染技术难以实现的真实感的游戏图形。经常使用粒子系统模拟的现象有火、爆炸、烟、水流、火花、落叶、云、雾、雪、尘、流星尾迹或者象发光轨迹这样的抽象视觉效果等等。  除过影视行业，CG 特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2015-09-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-14T10:29:52.220Z">
+<meta property="article:published_time" content="2022-03-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-26T08:55:03.506Z">
 <meta property="article:author" content="xujh">
-<meta property="article:tag" content="Cocos2d-x">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/">
+<link rel="canonical" href="http://aiplay.studio/2022/03/26/2022-03-26-particle-design/">
 
 
 <script id="page-configurations">
@@ -48,7 +47,7 @@
   };
 </script>
 
-  <title>基于Cocos2d-x的lua绑定机制 | 爱丸游戏工作室</title>
+  <title>粒子系统设计随想 | 爱丸游戏工作室</title>
   
 
 
@@ -187,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/">
+    <link itemprop="mainEntityOfPage" href="http://aiplay.studio/2022/03/26/2022-03-26-particle-design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -200,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          基于Cocos2d-x的lua绑定机制
+          粒子系统设计随想
         </h1>
 
         <div class="post-meta">
@@ -209,23 +208,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2015-09-18 00:00:00" itemprop="dateCreated datePublished" datetime="2015-09-18T00:00:00+08:00">2015-09-18</time>
+              <time title="创建时间：2022-03-26 00:00:00 / 修改时间：16:55:03" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+08:00">2022-03-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-14 18:29:52" itemprop="dateModified" datetime="2021-11-14T18:29:52+08:00">2021-11-14</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Cocos2d-x/" itemprop="url" rel="index"><span itemprop="name">Cocos2d-x</span></a>
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
                 </span>
             </span>
 
@@ -247,122 +240,89 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="关于tolua">关于tolua++</h2>
-<h3 id="tolua如何工作">tolua如何工作</h3>
-<p><a target="_blank" rel="noopener" href="https://github.com/LuaDist/toluapp">tolua++</a>是<a
-target="_blank" rel="noopener" href="http://webserver2.tecgraf.puc-rio.br/~celes/tolua/">tolua</a>的扩展版本，一款能够极大地简化C/C++代码与Lua代码集成的工具。tolua基于一份简单干净的头文件，能够自动生成从Lua代码中访问C/C++特性的绑定代码，通过使用Lua
-API和标记方法工具，tolua来映射管理C/C++中的常量，外部变量，函数，类和方法来给Lua使用。</p>
-<p>使用tolua通常要先建立pkg文件，里面包含对应C/C++头文件中能够被tolua++解析的声明，如常量、变量、函数以及类等。tolua++会根据pkg文件，来生成用于C/C++源文件与Lua交互的c/cpp文件，从而实现Lua中访问指定的C/C++代码。其中，无论是C函数还是C++对象的方法，都一律导出为静态函数。</p>
-<h3 id="如何使用tolua">如何使用tolua</h3>
-<p>生成的tolua++可执行文件，支持一些可选选项，使用./tolua++
--h可进行查看。</p>
+        <p>首先是关于粒子系统的概念，维基百科上是这么描述的：</p>
+<blockquote>
+<p>粒子系统表示三维计算机图形学中模拟一些特定的模糊现象的技术，而这些现象用其它传统的渲染技术难以实现的真实感的游戏图形。经常使用粒子系统模拟的现象有火、爆炸、烟、水流、火花、落叶、云、雾、雪、尘、流星尾迹或者象发光轨迹这样的抽象视觉效果等等。</p>
+</blockquote>
+<p>除过影视行业，CG
+特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细节处理，使得游戏体验更加细腻。因此，在游戏引擎中，粒子系统往往承担着实现特效效果的重要角色。</p>
+<p>早期的粒子系统，设计时通常会提供好各种固定功能的模块，诸如控制粒子的大小、颜色、方向等属性，对于特效设计人员来讲，只要在一个可视化的环境下，调节好各种参数即可。通常根据指责可划分成三个阶段：<strong>发射</strong>、<strong>影响</strong>、<strong>渲染</strong>。所以不管哪个游戏引擎的粒子系统，难免会经常看到诸如<em>Emitter</em>、<em>Renderer</em>等之类的词语。</p>
+<p>如下图所示，一个粒子根据上述三个阶段依次由出生（确定位置、速度、颜色、大小、初始旋转），到接受更新影响（变化参数可以是随机值、曲线等），最后根据渲染设置来重新组织、生成粒子的顶点数据并进行绘制。不同人设计出来的粒子系统可能看起来千差万别，但回归本质不难发现，谁也逃不出这三个步骤。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Particle%20Pipeline.png"
+alt="基础Particle Pipeline" />
+<figcaption aria-hidden="true">基础Particle Pipeline</figcaption>
+</figure>
+<p>这种模式有点类似早些年图形渲染中的“固定管线”，虽说一定程度上限制了设计人员的发挥，但是针对不同的特效，往往会衍生出固定的“套路”来。更新粒子模型、贴图，再配合上胶水代码（例如Lua脚本）来控制一些动态输入参数以及事件处理，基本上可以满足大部分的效果需求。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Module%20Pipeline.png"
+alt="ParticleSystem Modules" />
+<figcaption aria-hidden="true">ParticleSystem Modules</figcaption>
+</figure>
+<p>上图展示了一个功能基本完备的粒子系统模块流水线，主要借鉴了Unity中粒子系统的相关Module，笔者也曾在一款基于移动端的自研游戏引擎中，搞过一套功能几乎一样的粒子系统。下图则是Unity中一个ParticleSystem组件的基本Module分布：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/Unity_ParticleSystem.png"
+alt="Unity ParticleSystem Component" />
+<figcaption aria-hidden="true">Unity ParticleSystem
+Component</figcaption>
+</figure>
+<p>细致的模块划分，除过行业经验的积累，更主要还是为了<strong>功能解耦</strong>。我们知道，一个特效效果，往往是<strong>调试</strong>出来的，谁也没法准确的设定某个特效的具体参数，也仅仅是凭借脑子里的经验模型来不断试错。如果粒子系统的功能模块过于耦合，在游戏引擎迭代的过程中很难保证向下兼容，之前做的效果又要推倒重来，并且也不利于特效美术建立“经验模型”。</p>
+<p>其实早在Unity
+5.x时代的粒子系统，每个模块的很多参数支持以及像Lights、Custom
+Data这类更高级一些的特性都还没有支持，这都是在引擎版本迭代中慢慢积累起来的。每一次更新，无疑都会解放一部分特效制作人员的思维束缚，以及提高不少的产出效率。</p>
+<p>在与不同项目的特效美术同事打交道的过程中，我发现他们大多数都把粒子系统当做一个黑盒来使用（诚然确实也没办法去深刻理解引擎内部的具体实现），即便产生了一些特殊的制作思路，但碍于引擎更新迭代的各种成本，也都退而求其次以另一种方案来进行替代。但相比较于Unity这类商业游戏引擎，自研引擎也有一定的独特优势，就是可以根据项目需求来快速扩展制定出特殊的功能模块，也许并不是通用的最优解决方案，但无疑能提升生产力以匹配项目进度。</p>
+<p>这类“固定管线”形式的粒子系统伴随着整个游戏行业繁衍了很长时间，直至UnrealEngine发布了它们的全新粒子系统：<strong>Niagara</strong>。</p>
+<p>它采用类似Houdini那样的可视化节点的形式来制作特效，而不是传统的表格形式的参数调配。组织形式上与Unity的ParticleSystem也有一定的区别。</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/NiagaraMain.png"
+alt="Niagara编辑主界面" />
+<figcaption aria-hidden="true">Niagara编辑主界面</figcaption>
+</figure>
+<p>如上图，这是NiagaraSystem的主界面，它的混合结构与Unity的ParticleSystem有着不小的差别。这里的NiagaraSystem是一个复合特效效果的集合，它里面由若干个Emitter组成。Niagara的Emitter并不仅仅对标之前所提的发射阶段，也包含了影响阶段和渲染阶段的全部功能。因此，一个Emitter更像是对标Unity中的ParticleSystem组件。在Unity中制作一个特效，往往需要一个树形结构下的多个GameObject分别挂载着不同的ParticleSystem组件组合而成，其中每个ParticleSystem负责发射一类粒子。</p>
+<p>其实两者的实现目的都是一致的，但是Niagara的形式更符合美术的思维习惯，也更容易专注于效果的调试与制作，不用再牵扯精力去关心Transform组件或是整体的Node层级结构，全部放到一起，更加地一目了然。</p>
+<p>推荐阅读虚幻的官方文档<a
+target="_blank" rel="noopener" href="https://docs.unrealengine.com/4.27/zh-CN/RenderingAndGraphics/Niagara/NiagaraKeyConcepts/">《Niagara关键概念》</a>来理解Niagara的相关理念。其中，它的VFX系统目标，个人还是十分赞同的：</p>
 <ul>
-<li><p>使用 <strong>-o</strong> 来指定生成的c/cpp文件</p>
-<p>./tolua++ -o myfile.c myfile.pkg</p></li>
-<li><p>使用 <strong>-L</strong>
-来在优先通过都dofile()来运行一份指定的Lua文件</p>
-<p>./tolua++ -o myfile.c myfile.pkg -L rule.lua</p></li>
-<li><p>使用 <strong>-n</strong> 来指定导出到lua的package</p>
-<p>./tolua++ -n pkgname -o myfile.c myfile.pkg</p></li>
+<li>美术师可全权掌控效果</li>
+<li>各轴均可编程、可自定义</li>
+<li>提供更好的调试、显示和性能工具</li>
+<li>支持来自虚幻引擎4其他部分或外部源的数据</li>
+<li>不妨碍用户操作</li>
 </ul>
-<p>绑定生成代码必须被编译并链接到应用程序，才能被Lua代码访问。每一个被解析的package文件代表要导出到Lua的包。默认情况，包名称就是输入文件的名称。用户可以指定一个不同的包名称。在tolua中，需要明确地初始化解析出的对应的包给Lua。在C/C++代码中我们应该调用初始化函数
-<strong>int tolua_pkgname_open(void)</strong> 来进行初始化。其中
-<em>pkgname</em> 代表被绑定的包的名称。</p>
-<p>更加详细的说明请参考<a
-target="_blank" rel="noopener" href="http://webserver2.tecgraf.puc-rio.br/~celes/tolua/tolua-3.2.html">这里</a>。</p>
-<span id="more"></span>
-<h2 id="cocos2d-x的lua绑定机制">cocos2d-x的lua绑定机制</h2>
-<h3 id="版本2.x实现">版本2.x实现</h3>
-<p>在本节主要基于quick-cocos2d-x的2.x版本来进行讲解分析。在quick根目录的lib下，Lua绑定相关的代码放置于luabinding目录下，其中build.sh用来生成绑定文件。</p>
-<pre><code>#!/bin/bash
-DIR=$(cd &quot;$(dirname &quot;$&#123;BASH_SOURCE[0]&#125;&quot;)&quot; &amp;&amp; pwd)
-TOLUA=&quot;$QUICK_COCOS2DX_ROOT/bin/mac/tolua++&quot;
-
-cd &quot;$DIR/&quot;
-$&#123;TOLUA&#125; -L &quot;$DIR/basic.lua&quot; -o &quot;$QUICK_COCOS2DX_ROOT/lib/cocos2d-x/scripting/lua/cocos2dx_support/LuaCocos2d.cpp&quot; Cocos2d.tolua</code></pre>
-<p>根据脚本文件内容我们不难发现，其实就是执行了quick根目录bin/mac下的tolua++可执行文件，根据Cocos2d.tolua来解析生成LuaCocosd.cpp文件用于Lua代码中访问cocos2d-x的原生接口。其中还指定优先装载了basic.lua这个Lua文件，由于basic.lua文件篇幅较长，这里先不列出。其中basic.lua中重写实现了
-<strong>post_output_hook(packag)</strong>
-函数，该函数会在所有所有输出流写完之后执行。basic.lua通过这个函数主要进行了一些替换操作，以保证可以按照cocos2d-x自己的特殊需要修改输出的绑定生成cpp文件。</p>
-<p>举个例子，cocos2d-x会在CCLuaValue.h中声明诸如LUA_STRING、LUA_FUNCTION和LUA_TABLE的类型，它们实际上就是int整型。为了防止tolua++将LUA_FUNCTION等解析成自定义类型，利用basic.lua中的replace函数将一些出现LUA_FUNCTION的地方都替换成了空的字符串。</p>
-<p>正常如果我们想添加自己的c++代码并绑定给Lua使用，需要在quick-cocos2d-x中建立自己的tolua文件，该文件等同于之前的pkg文件，同样用于声明相关会被解析给Lua使用的常量、函数和类等。并建立一份build.sh脚本文件，内容如下：</p>
-<pre><code>#!/usr/bin/env bash
-DIR=&quot;$( cd &quot;$( dirname &quot;$&#123;BASH_SOURCE[0]&#125;&quot; )&quot; &amp;&amp; pwd )&quot;
-cd &quot;$DIR&quot;
-OUTPUT_DIR=&quot;$DIR&quot;
-QUICK_COCOS2DX_ROOT=&quot;$DIR/../../..&quot;
-MAKE_LUABINDING=&quot;$QUICK_COCOS2DX_ROOT&quot;/bin/compile_luabinding.sh
-$MAKE_LUABINDING -d &quot;$OUTPUT_DIR&quot; test.tolua</code></pre>
-<p>其中test.tolua是我们建立的pkg文件，里面声明了一个用于解析的C++类，其中类中有两个成员函数分别如下声明：</p>
-<pre><code>string gzipDecompressStringLua(const char* data, int len);
-LUA_STRING gzipCompressStringLua(const char* data, int len);</code></pre>
-<p>第一个gzipDecompressStringLua函数返回一个std::string给Lua使用，而第二个gzipCompressStringLua函数则返回LUA_STRING（实际上是int）给Lua层。执行刚刚新建立的build.sh，会自动生成一个cpp和h文件，里面就是根据tolua声明文件而对指定cpp文件解析生成的中间代码。首先会对Lua栈中的相关函数变量以及参数进行正确性地检查，没有问题后会根据tolua中的tolua_toXX系列函数生成调用所需的类的对象以及相关参数，最后调用c++对应的函数并获得返回值，通过tolua_pushXX系列函数将值压入Lua栈中。具体代码如下：</p>
-<pre><code>static int tolua_jj_luabinding_JJZipUtil_gzipDecompressStringLua00(lua_State* tolua_S)
-&#123;
-#ifndef TOLUA_RELEASE
-    tolua_Error tolua_err;
-    if (
-        !tolua_isusertype(tolua_S,1,&quot;JJZipUtil&quot;,0,&amp;tolua_err) ||
-        !tolua_isstring(tolua_S,2,0,&amp;tolua_err) ||
-        !tolua_isnumber(tolua_S,3,0,&amp;tolua_err) ||
-        !tolua_isnoobj(tolua_S,4,&amp;tolua_err)
-    )
-    goto tolua_lerror;
-    else
-#endif
-    &#123;
-        JJZipUtil* self = (JJZipUtil*)  tolua_tousertype(tolua_S,1,0);
-        const char* data = ((const char*)  tolua_tostring(tolua_S,2,0));
-        int len = ((int)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-    if (!self) tolua_error(tolua_S,&quot;invalid &#39;self&#39; in function &#39;gzipDecompressStringLua&#39;&quot;, NULL);
-#endif
-    &#123;
-        string tolua_ret = (string)  self-&gt;gzipDecompressStringLua(data,len);
-        tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
-    &#125;
-    &#125;
-    return 1;
-#ifndef TOLUA_RELEASE
-    tolua_lerror:
-    tolua_error(tolua_S,&quot;#ferror in function &#39;gzipDecompressStringLua&#39;.&quot;,&amp;tolua_err);
-    return 0;
-#endif
-&#125;</code></pre>
-<p>而第二个返回LUA_STRING的函数，生成代码类似，只不过调用c++函数并获得返回值处的代码变成了没有处理返回值以及压入Lua栈的操作，需要我们在具体函数实现中调用相应的api来将指定的值压入栈中，并可以指定压入数据的长度，这样可以避免一些数据截断的情况的发生。对应生成代码如下：</p>
-<pre><code>self-&gt;gzipCompressStringLua(data,len);</code></pre>
-<p>回顾刚刚的build.sh，不难发现，实际上就是去调用quick-cocos2d-x的根目录下bin/compile_luabinding.sh脚本文件，该脚本又调用了bin/lib/compile_luabinding.php脚本文件，其中该目录下还有其他的php脚本文件，如compile_luabinding_functions.php文件中针对LUA_STRING等类型进行了特殊处理，与之前的cocos2d-x中原生处理LUA_FUNCTION的思路一致。</p>
-<h3 id="版本3.x实现">版本3.x实现</h3>
-<p>在cocos2d-x
-3.x版本后，针对Lua的绑定做了一些变动，开发者们不需要再针对每一个要解析绑定的cpp文件来编写pkg(tolua)文件了。在cocos2d-x/tools/tolua目录下，我们发现有许多ini为后缀的文件。根据这些ini配置文件，执行同一目录下的genbindings.py就会生成绑定代码cpp/hpp文件于cocos2d-x/cocos/scripting/lua-bindings/auto目录下。具体如何添加自定义的C++类绑定给Lua使用，请参考官方帮助文档<a
-target="_blank" rel="noopener" href="http://www.cocos.com/doc/article/index?type=wiki&amp;url=/doc/cocos-docs-master/manual/framework/native/wiki/how-to-use-bindings-generator/zh.md">如何使用
-bindings-generator 自动生成 lua绑定</a>。</p>
-<p>关于genbindings.py脚本文件主要做了以下几件事情：</p>
-<ul>
-<li>检查ndk以及llvm的支持</li>
-<li>整理并将一些配置的环境变量值写入userconf.ini中</li>
-<li>遍历cmd_args列表(其中key值就是待解析ini文件的名称)，并执行cocos2d-x/tools/bindings-generator/generator.py</li>
-</ul>
-<p>因此，具体的解析操作是在cocos2d-x/tools/bindings-generator/generator.py来实现的。bindings-generator下的genertor.py不单单用来处理Lua的绑定操作，也包括js的。根据分析源码，我们发现其支持集中传入参数：</p>
-<ul>
-<li><strong>-s</strong> 设置要转换的特定部分</li>
-<li><strong>-t</strong> 指定目标虚拟机，会从TARGET.yaml中搜索</li>
-<li><strong>-o</strong> 指定生成C++代码的输出目录</li>
-<li><strong>-n</strong>
-指定输出文件的名称，默认为.ini文件中的prefix选项</li>
-</ul>
-<p>在cocos2d-x/tools/bindings-generator/targets/lua目录下，放有conversions.yaml文件以及一个templates目录，根据conversions.yaml配置与templates下的模板文件，通过clang来进行语法和词法分析来生成绑定代码。</p>
-<h2 id="相关参考">相关参考</h2>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/xml/x-cn-yamlintro/">YAML简介</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/opensource/os-pythcheetah/">使用Python和Cheetah构建和扩充模板</a></li>
-<li><a
-target="_blank" rel="noopener" href="http://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang">Parsing
-C++ in Python with Clang</a></li>
-<li><a target="_blank" rel="noopener" href="http://szelei.me/code-generator/">Implementing a code
-generator with libclang</a></li>
-</ul>
+<p>关于Niagara的强大，完全可以再开一篇甚至是多篇文章来详细介绍。这里想要强调的是，它完全实现了功能模块的<strong>可定制化</strong>。鼠标双击Emitter中的任意Item，会跳转到一个新的Niagara
+Script窗口，如下图所示：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/NiagaraModuleGraph.png"
+alt="Niagara Script Graph" />
+<figcaption aria-hidden="true">Niagara Script Graph</figcaption>
+</figure>
+<p>类似蓝图的Graph实现了对应Module下的全部功能逻辑，可以称之为Niagara脚本，具体源码实现在UNiagaraScript类中，继承自UObject，并且对应着一种资产。因此美术可以创建自己的<strong>Niagara
+Module Script</strong>和<strong>Niagara Function
+Script</strong>，灵活地应用于Emitter之中。也就是说，美术终于能够自己独立实现Module的逻辑了，不再受限于程序开发。</p>
+<p>对于创造力十足、很有想法的特效美术来说，这无疑是一巨大福音。</p>
+<p>但凡事都有两面性，很多时候我们可能并不需要放飞自我、无节制的创造，80%的制作还是离不开那几个老生常谈的参数。为此，Niagara也提供好了很多内置模块，方便大家像之前那样快速、直接地搭建出基础的粒子效果出来。即便这样，<strong>Niagara的学习成本无疑还是大大增加了</strong>。而且对于程序开发人员来讲，很多Module的逻辑通过Graph的形式阅读起来也比较头疼，虽然可以插入Custom
+HLSL代码（Niagara
+Script本质就是使用HLSL编译模块），但用起来也会有许多坑在里面。</p>
+<p>说到这里，Niagara的思路对现代游戏引擎的粒子系统设计还是有着非常多的借鉴意义。它解决了美术制作特效的最大痛点，并能更好地去进行效果调试和性能调优。</p>
+<p>归根结底，特效的制作工作流无论怎么完善，粒子系统无论怎么设计，其根本出发点无非就是：<strong>产出效率</strong>与<strong>运行效率</strong>。无论是制作一款3A大作，还是移动平台的休闲游戏，虽然需求形式大相径庭，但也逃不过上述两点。基于这两个出发点，以及以往的经验和一些商业引擎的借鉴，整理了如下一份粒子系统设计的思维导图：</p>
+<figure>
+<img
+src="https://aiplay-1305529264.cos.ap-shanghai.myqcloud.com/20220212_ParticleSystemDesign/ParticleSystemDesign.png"
+alt="Particle System Design" />
+<figcaption aria-hidden="true">Particle System Design</figcaption>
+</figure>
+<p>想要为游戏引擎设计出一款好的粒子系统，除了老生常谈的基于SOA架构的DOP模式，支持应对海量粒子模拟的GPU方案，还要包括强大、便利的<strong>数据通信能力</strong>，包括并不仅限于粒子系统内部，游戏引擎的其他模块，甚至于针对外部资产数据的处理和交互。</p>
+<p><strong>编辑器的配套支持</strong>也是尤为重要的，毕竟粒子系统的内核设计的再完美，架构再优越，最终也是要给人来用的。抛开一些硬核功能的支持不谈，如果操作过于繁琐甚至于workflow上有些反人类，都会导致它不能被大众所接受。往往使用粒子系统更多的还是美术从业人员，因此从他们的角度、思维习惯来设计十分重要。此外，粒子系统也常常是需要进行性能优化的地方，为了平衡美术与程序在效果与性能之间的根本冲突，完备的<strong>性能调试</strong>辅助工具也是需要的，以数据事实说话节约沟通成本，也有助于系统设计初期暴露出一些隐藏的性能问题。</p>
+<p>最后，这篇文章可能有很多不够严谨或是值得商榷的地方，欢迎各路特效大神来指点、交流。
+)</p>
+<p>想要为游戏引擎设计出一款好的粒子系统，除了老生常谈的基于SOA架构的DOP模式，支持应对海量粒子模拟的GPU方案，还要包括强大、便利的<strong>数据通信能力</strong>，包括并不仅限于粒子系统内部，游戏引擎的其他模块，甚至于针对外部资产数据的处理和交互。</p>
+<p><strong>编辑器的配套支持</strong>也是尤为重要的，毕竟粒子系统的内核设计的再完美，架构再优越，最终也是要给人来用的。抛开一些硬核功能的支持不谈，如果操作过于繁琐甚至于workflow上有些反人类，都会导致它不能被大众所接受。往往使用粒子系统更多的还是美术从业人员，因此从他们的角度、思维习惯来设计十分重要。此外，粒子系统也常常是需要进行性能优化的地方，为了平衡美术与程序在效果与性能之间的根本冲突，完备的<strong>性能调试</strong>辅助工具也是需要的，以数据事实说话节约沟通成本，也有助于系统设计初期暴露出一些隐藏的性能问题。</p>
+<p>最后，这篇文章可能有很多不够严谨或是值得商榷的地方，欢迎各路特效大神来指点、交流。</p>
 
     </div>
 
@@ -393,7 +353,7 @@ generator with libclang</a></li>
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/" title="基于Cocos2d-x的lua绑定机制">http://aiplay.studio/2015/09/18/2015-09-18-luabinding-in-cocos2dx/</a>
+    <a href="http://aiplay.studio/2022/03/26/2022-03-26-particle-design/" title="粒子系统设计随想">http://aiplay.studio/2022/03/26/2022-03-26-particle-design/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -422,9 +382,6 @@ generator with libclang</a></li>
 
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Cocos2d-x/" rel="tag"> <i class="fa fa-tag"></i> Cocos2d-x</a>
-          </div>
 
         
 
@@ -432,13 +389,10 @@ generator with libclang</a></li>
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2015/05/07/2015-05-07-vim-ultisnips/" rel="prev" title="VIM下使用自定义代码片段">
-      <i class="fa fa-chevron-left"></i> VIM下使用自定义代码片段
+    <a href="/2021/05/07/2021-05-07-dream-reality-gameproducer/" rel="prev" title="爱，死亡，游戏制作人">
+      <i class="fa fa-chevron-left"></i> 爱，死亡，游戏制作人
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2015/11/03/2015-01-03-year-summary/" rel="next" title="我的2014-2015">
-      我的2014-2015 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -497,7 +451,6 @@ generator with libclang</a></li>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Etolua"><span class="nav-number">1.</span> <span class="nav-text">关于tolua++</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tolua%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">tolua如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8tolua"><span class="nav-number">1.2.</span> <span class="nav-text">如何使用tolua</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cocos2d-x%E7%9A%84lua%E7%BB%91%E5%AE%9A%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">cocos2d-x的lua绑定机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC2.x%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">版本2.x实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC3.x%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">版本3.x实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">相关参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
