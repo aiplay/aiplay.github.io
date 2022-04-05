@@ -30,7 +30,7 @@
 <meta property="og:description" content="首先是关于粒子系统的概念，维基百科上是这么描述的：  粒子系统表示三维计算机图形学中模拟一些特定的模糊现象的技术，而这些现象用其它传统的渲染技术难以实现的真实感的游戏图形。经常使用粒子系统模拟的现象有火、爆炸、烟、水流、火花、落叶、云、雾、雪、尘、流星尾迹或者象发光轨迹这样的抽象视觉效果等等。  除过影视行业，CG 特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-26T08:55:03.506Z">
+<meta property="article:modified_time" content="2022-03-26T08:55:57.665Z">
 <meta property="article:author" content="xujh">
 <meta name="twitter:card" content="summary">
 
@@ -210,7 +210,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-03-26 00:00:00 / 修改时间：16:55:03" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+08:00">2022-03-26</time>
+              <time title="创建时间：2022-03-26 00:00:00 / 修改时间：16:55:57" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+08:00">2022-03-26</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -247,6 +247,7 @@
 <p>除过影视行业，CG
 特效在游戏领域中也有着广泛的应用，往往用于强化视觉、动作张力的表现，或是丰富一些细节处理，使得游戏体验更加细腻。因此，在游戏引擎中，粒子系统往往承担着实现特效效果的重要角色。</p>
 <p>早期的粒子系统，设计时通常会提供好各种固定功能的模块，诸如控制粒子的大小、颜色、方向等属性，对于特效设计人员来讲，只要在一个可视化的环境下，调节好各种参数即可。通常根据指责可划分成三个阶段：<strong>发射</strong>、<strong>影响</strong>、<strong>渲染</strong>。所以不管哪个游戏引擎的粒子系统，难免会经常看到诸如<em>Emitter</em>、<em>Renderer</em>等之类的词语。</p>
+<span id="more"></span>
 <p>如下图所示，一个粒子根据上述三个阶段依次由出生（确定位置、速度、颜色、大小、初始旋转），到接受更新影响（变化参数可以是随机值、曲线等），最后根据渲染设置来重新组织、生成粒子的顶点数据并进行绘制。不同人设计出来的粒子系统可能看起来千差万别，但回归本质不难发现，谁也逃不出这三个步骤。</p>
 <figure>
 <img
